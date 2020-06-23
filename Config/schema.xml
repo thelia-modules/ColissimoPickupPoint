@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database defaultIdMethod="native" name="thelia" namespace="ColissimoPickupPoint\Model">
+
+    <table name="address_colissimo_pickup_point">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="title_id" required="true" type="INTEGER" />
+        <column name="company" size="255" type="VARCHAR" />
+        <column name="firstname" required="true" size="255" type="VARCHAR" />
+        <column name="lastname" required="true" size="255" type="VARCHAR" />
+        <column name="address1" required="true" size="255" type="VARCHAR" />
+        <column name="address2" required="true" size="255" type="VARCHAR" />
+        <column name="address3" required="true" size="255" type="VARCHAR" />
+        <column name="zipcode" required="true" size="10" type="VARCHAR" />
+        <column name="city" required="true" size="255" type="VARCHAR" />
+        <column name="country_id" required="true" type="INTEGER" />
+        <column name="code" required="true" size="10" type="VARCHAR" />
+        <column name="type" required="true" size="10" type="VARCHAR" />
+        <column name="cellphone" required="false" size="20" type="VARCHAR" />
+        <foreign-key foreignTable="customer_title" name="fk_address_colissimo_pickup_point_customer_title_id" onDelete="RESTRICT" onUpdate="RESTRICT">
+            <reference foreign="id" local="title_id" />
+        </foreign-key>
+        <foreign-key foreignTable="country" name="fk_address_colissimo_pickup_point_country_id" onDelete="RESTRICT" onUpdate="RESTRICT">
+            <reference foreign="id" local="country_id" />
+        </foreign-key>
+    </table>
+
+    <table name="order_address_colissimo_pickup_point">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="code" size="10" type="VARCHAR" required="true" />
+        <column name="type" size="10" type="VARCHAR" required="true" />
+        <foreign-key foreignTable="order_address" name="fk_order_address_colissimo_pickup_point_order_address_id" onDelete="CASCADE" onUpdate="CASCADE">
+            <reference foreign="id" local="id" />
+        </foreign-key>
+    </table>
+
+    <table name="colissimo_pickup_point_price_slices">
+        <column name="id" primaryKey="true" autoIncrement="true" required="true" type="INTEGER" />
+        <column name="area_id" required="true" type="INTEGER" />
+        <column name="weight_max" type="FLOAT" />
+        <column name="price_max" type="FLOAT" />
+        <column name="franco_min_price" type="FLOAT" />
+        <column name="price" required="true" type="FLOAT" />
+        <foreign-key foreignTable="area" name="fk_colissimo_pickup_point_price_slices_area_id" onDelete="RESTRICT" onUpdate="RESTRICT">
+            <reference foreign="id" local="area_id" />
+        </foreign-key>
+    </table>
+
+    <table name="colissimo_pickup_point_freeshipping">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="active" type="BOOLEAN" default="0"/>
+        <column name="freeshipping_from" size="18" scale="2" type="DECIMAL" />
+    </table>
+
+    <table name="colissimo_pickup_point_area_freeshipping">
+        <column name="id" primaryKey="true" autoIncrement="true" required="true" type="INTEGER" />
+        <column name="area_id" required="true" type="INTEGER" />
+        <column name="cart_amount" defaultValue="0.00" size="18" scale="2" type="DECIMAL" />
+        <foreign-key foreignTable="area" name="fk_colissimo_pickup_point_area_freeshipping_pr_area_id" onDelete="RESTRICT" onUpdate="RESTRICT">
+            <reference foreign="id" local="area_id" />
+        </foreign-key>
+    </table>
+
+    <external-schema filename="local/config/schema.xml" referenceOnly="true" />
+</database>

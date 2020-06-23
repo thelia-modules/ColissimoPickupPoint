@@ -1,0 +1,36 @@
+{literal}
+{
+{/literal}
+"locations":
+[
+{loop type="colissimo.pickup.point.around" name="delivery-selection-colissimo-pickup-point" countryid=$_countryid_ zipcode=$_zipcode_ city=$_city_ address=$_address_}
+    {literal}
+    {
+    {/literal}
+        "name": "{$nom}",
+        "lat": {$coordGeolocalisationLatitude},
+        "lng": {$coordGeolocalisationLongitude},
+        "id": "{$identifiant}",
+        "address": "{$adresse1}",
+        "zipcode": "{$codePostal}",
+        "city": "{$localite}",
+        "countrycode" : "{$codePays}",
+        "distance": "{$distance}",
+        "type": "{$typeDePoint}",
+        "monday": "{$horairesOuvertureLundi}",
+        "tuesday": "{$horairesOuvertureMardi}",
+        "wednesday": "{$horairesOuvertureMercredi}",
+        "thursday": "{$horairesOuvertureJeudi}",
+        "friday": "{$horairesOuvertureVendredi}",
+        "saturday": "{$horairesOuvertureSamedi}",
+        "sunday": "{$horairesOuvertureDimanche}",
+        "disabledPerson": "{$accesPersonneMobiliteReduite}"
+    {literal}
+    }
+    {/literal}
+    {if $LOOP_COUNT < $LOOP_TOTAL},{/if}
+{/loop}
+]
+{literal}
+}
+{/literal}

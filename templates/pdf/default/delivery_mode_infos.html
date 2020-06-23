@@ -1,0 +1,14 @@
+{loop type='colissimo.pickup.point.order_address' name='colissimo.pickup.point.order_address' id=$delivery_address_id}
+        <p>
+            {intl l='Delivered at a relay.' d='colissimo.pickup.point.pdf.default'}<br/><br/>
+            <b>{intl l='Relay address:' d='colissimo.pickup.point.pdf.default'}</b>
+            {loop name='order_address' type='order_address' id=$delivery_address_id}
+            <blockquote>{$COMPANY}<br/>
+                {$ADDRESS1} {$ADDRESS2} {$ADDRESS3}<br/>
+                {$ZIPCODE} {$CITY}<br/>
+                {loop type="country" name="country_delivery" id=$COUNTRY}{$TITLE}{/loop}
+            </blockquote>
+            {/loop}
+            {elseloop rel='order_address'}&nbsp;{intl l='no address' d='colissimo.pickup.point.pdf.default'}{/elseloop}
+        </p>
+{/loop}

@@ -1,0 +1,31 @@
+{loop name="check.module.colissimo.pickup.point.order.edit" type="order" id=$ID status="2,3"}
+{loop name="check.module.colissimo.pickup.point.id" type="colissimo.pickup.point.id"}
+    {if $MODULE_ID == $DELIVERY_MODULE}
+    <br/>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            {intl l="Export Coliship file" d='colissimo.pickup.point.ai'}
+        </div>
+        <div class="panel-body">
+
+                {form name="colissimo.pickup.point.export"}
+                <form action="{url path="/admin/module/ColissimoPickupPoint/export"}" method="post">
+                    {form_hidden_fields form=$form}
+                    {form_field form=$form field="new_status_id"}
+                        <input type="hidden" name="{$name}" value="nochange" />
+                    {/form_field}
+
+                    {form_field form=$form field="order_"|cat:$ID}
+                        <input type="hidden" name="{$name}" value="true" />
+                    {/form_field}
+                    <button type="submit" name="export_order" value="stay" class="form-submit-button btn btn-sm btn-default" title="{intl l='Export' d='colissimo.pickup.point.ai'}">{intl l='Export' d='colissimo.pickup.point.ai'} <span class="glyphicon glyphicon-ok"></span></button>
+                </form>
+                {/form}
+                <br/>
+
+                Suivi du colis: <a href="">ici</a>
+        </div>
+    </div>
+    {/if}
+{/loop}
+{/loop}

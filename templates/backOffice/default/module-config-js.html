@@ -1,0 +1,201 @@
+{javascripts file='assets/js/bootstrap-switch/bootstrap-switch.js'}
+<script src='{$asset_url}'></script>
+{/javascripts}
+
+{javascripts file='assets/js/libs/underscore-min.js'}
+<script src="{$asset_url}"></script>
+{/javascripts}
+
+
+<script>
+
+    var config = {
+        'urlAdd': '{url path="/admin/module/ColissimoPickupPoint/slice/save"}',
+        'urlDelete': '{url path="/admin/module/ColissimoPickupPoint/slice/delete"}',
+        'urlSave': '{url path="/admin/module/ColissimoPickupPoint/slice/save"}'
+    };
+
+    $(document).ready(function() {
+        var checkboxes = [];
+
+        {loop name="js.get.orders.colissimo.pickup.point.export" type="order.notsent.colissimo.pickup.point"}
+        checkboxes.push("export_{$ID}");
+        {/loop}
+        //Buttons
+        $("#check-all-but").click( function() {
+            checkboxes.forEach(function(entry) {
+                $("#"+entry).prop('checked', true);
+            });
+        });
+        $("#uncheck-all-but").click( function() {
+            checkboxes.forEach(function(entry) {
+                $("#"+entry).prop('checked', false);
+            });
+        });
+        $("#reverse-all-but").click( function() {
+            checkboxes.forEach(function(entry) {
+                var box=$("#"+entry);
+                box.prop('checked', !box.is(":checked"));
+            });
+        });
+        // Export form button
+        $("button[name=export_colissimo_pickup_point_form]").click(function() {
+            var value = $("input[name='exportcolissimopickuppointorder[new_status_id]']:checked").val();
+            if(value == "sent") {
+                checkboxes.forEach(function(entry) {
+                    var box=$("#"+entry);
+                    if(box.is(":checked")) {
+                        var row= box.parents("tr"); // get first tr parent
+                        row.hide('slow', function() {
+                            row.remove();
+                        });
+                    }
+                });
+            }
+        });
+        // Free shipping switch
+        $(".freeshipping-activation-ColissimoPickupPoint").bootstrapSwitch();
+
+        $(".freeshipping-activation-ColissimoPickupPoint").on("switch-change", function(e, data){
+            var is_checked = data.value;
+            var mode = $(this).data("id");
+            var form = $("#freeshippingform");
+            $('body').append('<div class="modal-backdrop fade in" id="loading-event"><div class="loading"></div></div>');
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: form.serialize()
+            }).done(function(){
+                $("#loading-event").remove();
+            })
+                .success(function() {
+                    if (is_checked) {
+                        $('#config-btn-0').removeClass('disabled');
+                        $('#table-prices-colissimo-pickup-point-'+mode).hide('slow');
+                        $('#freeshipping-from-'+mode).hide('slow');
+                    } else {
+                        $('#config-btn-0').addClass('disabled');
+                        $('#table-prices-colissimo-pickup-point-'+mode).show('slow');
+                        $('#freeshipping-from-'+mode).show('slow');
+                    }
+                })
+                .fail(function(jqXHR, textStatus, errorThrown){
+                    $('#freeshipping-failed-body').html(jqXHR.responseJSON.error);
+                    $("#freeshipping-failed").modal("show");
+                });
+
+        });
+
+
+        // Price slice
+
+        var tpl = _.template($("#tpl-slice").html());
+
+        var showMessage = function showMessage(message) {
+            $('#colissimo-pickup-point_dialog')
+                    .find('.modal-body')
+                    .html(message)
+                    .end()
+                    .modal("show");
+        };
+
+        var getSliceData = function getSliceData($slice) {
+            var data = {
+                id: $slice.data("id"),
+                area: $slice.data("area"),
+                price: $slice.find(".js-slice-price").first().val(),
+                priceMax: $slice.find(".js-slice-price-max").first().val(),
+                weightMax: $slice.find(".js-slice-weight-max").first().val()
+            };
+
+            return data;
+        };
+
+        // add new slice
+        $('.js-slice-add').on('click', function(){
+            var $slice = $(this).parents('tr').first();
+            var data = getSliceData($slice);
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                data: data,
+                url: config.urlAdd
+            }).done(function(data, textStatus, jqXHR){
+                var sliceHtml = '';
+                if (data.success) {
+                    // reset form
+                    $slice.find('input').val('');
+                    // add slice
+                    sliceHtml = tpl(data.slice);
+
+                    $(sliceHtml).insertBefore($slice);
+                } else {
+                    showMessage(data.message.join('<br>'));
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown){
+                console.log(jqXHR);
+                showMessage(jqXHR.responseText);
+            });
+        });
+
+        // save new slice
+        $('.slices').on('click', '.js-slice-save', function(){
+            var $slice = $(this).parents('tr').first();
+            var data = getSliceData($slice);
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                data: data,
+                url: config.urlAdd
+            }).done(function(data, textStatus, jqXHR){
+                if (!data.success) {
+                    showMessage(data.message.join('<br>'));
+                } else {
+                    var sliceHtml = tpl(data.slice);
+                    $(sliceHtml).insertBefore($slice);
+                    $slice.remove();
+                    // $slice.find('.js-slice-save').removeClass('btn-success');
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown){
+                console.log(jqXHR);
+                showMessage(jqXHR.responseText);
+            });
+        });
+
+        $('.slices').on('change', '.js-slice input', function() {
+            $(this).parents('tr').first().find('.js-slice-save').addClass('btn-success');
+        });
+
+        // delete new slice
+        $('.slices').on('click', '.js-slice-delete', function(){
+            var $slice = $(this).parents('tr').first();
+            var data = getSliceData($slice);
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                data: data,
+                url: config.urlDelete
+            }).done(function(data, textStatus, jqXHR){
+                var sliceHtml = '';
+                if (data.success) {
+                    $slice.remove();
+                } else {
+                    showMessage(data.message);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown){
+                console.log(jqXHR);
+                showMessage(jqXHR.responseText);
+            });
+        });
+
+        // add new slice
+        $('.js-slice input').on('change', function(){
+
+        });
+
+    });
+
+</script>

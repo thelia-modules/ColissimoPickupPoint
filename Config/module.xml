@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+    <fullnamespace>ColissimoPickupPoint\ColissimoPickupPoint</fullnamespace>
+    <descriptive locale="en_US">
+        <title>Colissimo Pickup Point Delivery</title>
+    </descriptive>
+    <descriptive locale="fr_FR">
+        <title>Livraison Colissimo en Point Retrait</title>
+    </descriptive>
+    <version>1.0.0</version>
+    <author>
+        <name>Thelia</name>
+        <email>info@thelia.net</email>
+    </author>
+    <type>delivery</type>
+    <thelia>2.3.4</thelia>
+    <stability>other</stability>
+</module>
