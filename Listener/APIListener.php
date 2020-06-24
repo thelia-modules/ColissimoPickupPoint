@@ -23,22 +23,18 @@ class APIListener implements EventSubscriberInterface
      */
     protected function callWebService(PickupLocationEvent $pickupLocationEvent)
     {
-        $zipcode = $pickupLocationEvent->getZipCode();
-        $city = $pickupLocationEvent->getCity();
-        $address = $pickupLocationEvent->getAddress();
         $countryCode = '';
 
         if ($country = $pickupLocationEvent->getCountry()) {
             $countryCode = $country->getIsoalpha2();
         }
 
-
         // Then ask the Web Service
         $request = new FindByAddress();
         $request
-            ->setAddress($address)
-            ->setZipCode($zipcode)
-            ->setCity($city)
+            ->setAddress($pickupLocationEvent->getAddress())
+            ->setZipCode($pickupLocationEvent->getZipCode())
+            ->setCity($pickupLocationEvent->getCity())
             ->setCountryCode($countryCode)
             ->setFilterRelay('1')
             ->setRequestId(md5(microtime()))
@@ -137,7 +133,7 @@ class APIListener implements EventSubscriberInterface
      * @param PickupLocationEvent $pickupLocationEvent
      * @throws \Exception
      */
-    public function get(PickupLocationEvent $pickupLocationEvent)
+    public function getPickupLocations(PickupLocationEvent $pickupLocationEvent)
     {
         if (null !== $moduleIds = $pickupLocationEvent->getModuleIds()) {
             if (!in_array(ColissimoPickupPoint::getModuleId(), $moduleIds)) {
@@ -158,7 +154,7 @@ class APIListener implements EventSubscriberInterface
 
         /** Check for old versions of Thelia where the events used by the API didn't exists */
         if (class_exists(PickupLocation::class)) {
-            $listenedEvents[TheliaEvents::MODULE_DELIVERY_GET_PICKUP_LOCATIONS] = array("get", 128);
+            $listenedEvents[TheliaEvents::MODULE_DELIVERY_GET_PICKUP_LOCATIONS] = array("getPickupLocations", 128);
         }
 
         return $listenedEvents;
