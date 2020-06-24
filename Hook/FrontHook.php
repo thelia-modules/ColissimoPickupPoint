@@ -21,9 +21,6 @@ use Thelia\Core\Hook\BaseHook;
  * @author Michaël Espeche <mespeche@openstudio.fr>
  */
 class FrontHook extends BaseHook {
-
-
-
     public function onOrderDeliveryExtra(HookRenderEvent $event)
     {
         $content = $this->render('colissimo-pickup-point.html', $event->getArguments());

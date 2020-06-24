@@ -1,5 +1,3 @@
-The Readme is not up to date yet
-
 ColissimoPickupPoint Module v1.0
 author: <info@thelia.net>
 
@@ -20,7 +18,7 @@ To install the ColissimoPickupPoint module, download the archive and extract it 
 How to use
 -----------
 First, go to your back office, tab Modules, and activate the module ColissimoPickupPoint.
-Then go to So Colissimo configure page, tab "Advanced Configuration" and enter your Colissimo id and password.
+Then go to the ColissimoPickupPoint config page, tab "Advanced Configuration" and enter your Colissimo id and password.
 To import exported files in Expeditor INET, you need the file THELIA_INET.FMT, that is in the archive.
 
 Loops
@@ -117,6 +115,16 @@ Loops
 	- Usage:
 		```{loop name="yourloopname" type="colissimo.pickup.point.freeshipping"}<!-- your template -->{/loop}```
 		
+Plugins Smarty
+-----
+1. colissimoPickupPointDeliveryPrice
+	- Arguments:
+		1. country | optionnal | The country ID from which you want to get the delivery prices. Defaults to store country
+	- Outputs:
+		1. $isValidMode : Whether the delivery is valid for the cart in session and the chosen country.
+		2. $deliveryPrice : The delivery price for the cart in session in the chosen country.
+	- Usage:
+		```{colissimoPickupPointDeliveryPrice country=64}```
 
 Integration
 -----------
