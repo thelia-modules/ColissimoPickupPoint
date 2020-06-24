@@ -9,11 +9,22 @@ Summary
 3. Loops
 4. Integration
 
-en_US
+Instructions
 =====
 Install notes
 -----------
-To install the ColissimoPickupPoint module, download the archive and extract it in pathToThelia/local/modules
+### Manually
+
+* Copy the module into ```<thelia_root>/local/modules/``` directory and be sure that the name of the module is ColissimoPickupPoint.
+* Activate it in your thelia administration panel
+
+### Composer
+
+Add it in your main thelia composer.json file
+
+```
+composer require thelia/colissimo-pickup-point-module:~1.0.0
+```
 
 How to use
 -----------
