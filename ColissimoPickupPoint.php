@@ -318,7 +318,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
             ->files()
             ->name('#.*?\.sql#')
             ->sortByName()
-            ->in(__DIR__ . DS . 'Config' . DS . 'update' . DS . 'sql');
+            ->in(__DIR__ . DS . 'Config' . DS . 'update');
 
         $database = new Database($con);
 
@@ -333,5 +333,10 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
                 );
             }
         }
+    }
+
+    public function getDeliveryMode()
+    {
+        return "pickup";
     }
 }
