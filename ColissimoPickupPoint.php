@@ -334,4 +334,9 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
             }
         }
     }
+
+    public function getDeliveryMode()
+    {
+        return "pickup";
+    }
 }
