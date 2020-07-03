@@ -1,5 +1,7 @@
-ColissimoPickupPoint Module v1.0
-author: <info@thelia.net>
+# ColissimoHomeDelivery
+
+Adds a delivery system for Colissimo pickup delivery.  
+For home delivery look at this module https://github.com/thelia-modules/ColissimoPickupPoint
 
 Summary
 =======
