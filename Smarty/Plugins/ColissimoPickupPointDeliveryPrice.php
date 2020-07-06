@@ -5,6 +5,7 @@ namespace ColissimoPickupPoint\Smarty\Plugins;
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Thelia\Core\HttpFoundation\Request;
+use Thelia\Model\CountryArea;
 use Thelia\Model\CountryQuery;
 use Thelia\Model\Country;
 use Thelia\Module\Exception\DeliveryException;
@@ -41,9 +42,17 @@ class ColissimoPickupPointDeliveryPrice extends AbstractSmartyPlugin
         $cartWeight = $this->request->getSession()->getSessionCart($this->dispatcher)->getWeight();
         $cartAmount = $this->request->getSession()->getSessionCart($this->dispatcher)->getTaxedAmount($country);
 
+        $countryAreas = $country->getCountryAreas();
+        $areasArray = [];
+
+        /** @var CountryArea $countryArea */
+        foreach ($countryAreas as $countryArea) {
+            $areasArray[] = $countryArea->getAreaId();
+        }
+
         try {
-            $price = ColissimoPickupPoint::getPostageAmount(
-                $country->getAreaId(),
+            $price = (new ColissimoPickupPoint)->getMinPostage(
+                $areasArray,
                 $cartWeight,
                 $cartAmount
             );

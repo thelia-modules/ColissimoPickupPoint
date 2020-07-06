@@ -70,7 +70,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
     const IMPORT_ORDER_REF_COL = 1;
 
     /**
-     * This method is called by the Delivery  loop, to check if the current module has to be displayed to the customer.
+     * This method is called by the Delivery loop, to check if the current module has to be displayed to the customer.
      * Override it to implements your delivery rules/
      *
      * If you return true, the delivery method will de displayed to the customer
@@ -123,19 +123,55 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
      */
     public static function getPostageAmount($areaId, $weight, $cartAmount = 0)
     {
-        $freeshipping = ColissimoPickupPointFreeshippingQuery::create()
-            ->findOneById(1)
-            ->getActive()
-        ;
+        /** Check if freeshipping is activated */
+        try {
+            $freeshipping = ColissimoPickupPointFreeshippingQuery::create()
+                ->findPk(1)
+                ->getActive()
+            ;
+        } catch (\Exception $exception) {
+            $freeshipping = false;
+        }
 
-        $freeshippingFrom = ColissimoPickupPointFreeshippingQuery::create()
-            ->findOneById(1)
-            ->getFreeshippingFrom()
-        ;
+        /** Get the total cart price needed to have a free shipping for all areas, if it exists */
+        try {
+            $freeshippingFrom = ColissimoPickupPointFreeshippingQuery::create()
+                ->findPk(1)
+                ->getFreeshippingFrom()
+            ;
+        } catch (\Exception $exception) {
+            $freeshippingFrom = false;
+        }
 
+        /** Set the initial postage price as 0 */
         $postage = 0;
 
+        /** If free shipping is enabled, skip and return 0 */
         if (!$freeshipping) {
+
+            /** If a min price for general freeshipping is defined and the cart reach this amount, return a postage of 0 */
+            if (null !== $freeshippingFrom && $freeshippingFrom <= $cartAmount) {
+                return 0;
+            }
+
+            /** Get the minimum price for free shipping in the area of the order */
+            $areaFreeshipping = ColissimoPickupPointAreaFreeshippingQuery::create()
+                ->filterByAreaId($areaId)
+                ->findOne()
+            ;
+
+            if ($areaFreeshipping) {
+                $areaFreeshipping = $areaFreeshipping->getCartAmount();
+            }
+
+            /** If the cart price is superior to the minimum price for free shipping in the area of the order,
+             * return the postage as free.
+             */
+            if (null !== $areaFreeshipping && $areaFreeshipping <= $cartAmount) {
+                return 0;
+            }
+
+            /** Search the list of prices and order it in ascending order */
             $areaPrices = ColissimoPickupPointPriceSlicesQuery::create()
                 ->filterByAreaId($areaId)
                 ->filterByWeightMax($weight, Criteria::GREATER_EQUAL)
@@ -147,35 +183,21 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
                 ->orderByWeightMax()
                 ->orderByPriceMax();
 
-            $firstPrice = $areaPrices->find()
-                ->getFirst();
+            /** Find the correct postage price for the cart weight and price according to the area and delivery mode in $areaPrices*/
+            $firstPrice = $areaPrices
+                ->find()
+                ->getFirst()
+            ;
 
+            /** If no price was found, return null */
             if (null === $firstPrice) {
-                throw new DeliveryException('Colissimo delivery unavailable for your cart weight or delivery country');
-            }
-
-            /** If a min price for general freeshipping is defined and the cart reach this amount, return a postage of 0 */
-            if (null !== $freeshippingFrom && $freeshippingFrom <= $cartAmount) {
-                $postage = 0;
-                return $postage;
-            }
-
-            $areaFreeshipping = ColissimoPickupPointAreaFreeshippingQuery::create()
-                ->filterByAreaId($areaId)
-                ->findOne();
-
-            if ($areaFreeshipping) {
-                $areaFreeshipping = $areaFreeshipping->getCartAmount();
-            }
-
-            /** If a min price for area freeshipping is defined and the cart reach this amount, return a postage of 0 */
-            if (null !== $areaFreeshipping && $areaFreeshipping <= $cartAmount) {
-                $postage = 0;
-                return $postage;
+                return null;
+                //throw new DeliveryException('Colissimo delivery unavailable for your cart weight or delivery country');
             }
 
             $postage = $firstPrice->getPrice();
         }
+
         return $postage;
     }
 
@@ -198,25 +220,24 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
         if (empty($areaIdArray)) {
             throw new DeliveryException('Your delivery country is not covered by Colissimo.');
         }
-        $postage = null;
 
         if (null === $postage = $this->getMinPostage($areaIdArray, $cartWeight, $cartAmount)) {
-            $postage = $this->getMinPostage($areaIdArray, $cartWeight, $cartAmount);
-            if (null === $postage) {
-                throw new DeliveryException('Colissimo delivery unavailable for your cart weight or delivery country');
-            }
+            throw new DeliveryException('Colissimo delivery unavailable for your cart weight or delivery country');
         }
+
         return $postage;
     }
 
-
-    private function getMinPostage($areaIdArray, $cartWeight, $cartAmount)
+    public function getMinPostage($areaIdArray, $cartWeight, $cartAmount)
     {
         $minPostage = null;
 
         foreach ($areaIdArray as $areaId) {
             try {
                 $postage = self::getPostageAmount($areaId, $cartWeight, $cartAmount);
+                if (null === $postage) {
+                    continue ;
+                }
                 if ($minPostage === null || $postage < $minPostage) {
                     $minPostage = $postage;
                     if ($minPostage == 0) {
@@ -224,18 +245,23 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
                     }
                 }
             } catch (\Exception $ex) {
+                throw new DeliveryException($ex->getMessage()); //todo make a better catch
             }
+        }
+
+        if (null === $minPostage) {
+            throw new DeliveryException("Colissimo delivery unavailable for your cart weight or delivery country");
         }
 
         return $minPostage;
     }
 
     /**
-     * Returns ids of area containing this country and covers by this module
+     * Returns ids of area containing this country and covered by this module
      * @param Country $country
      * @return array Area ids
      */
-    private function getAllAreasForCountry(Country $country)
+    public function getAllAreasForCountry(Country $country)
     {
         $areaArray = [];
 
@@ -287,7 +313,6 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
             self::setConfigValue(self::COLISSIMO_ENDPOINT, 'https://ws.colissimo.fr/pointretrait-ws-cxf/PointRetraitServiceWS/2.0?wsdl');
         }
     }
-
 
     public function postActivation(ConnectionInterface $con = null)
     {
