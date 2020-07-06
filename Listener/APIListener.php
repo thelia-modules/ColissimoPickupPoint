@@ -6,6 +6,9 @@ namespace ColissimoPickupPoint\Listener;
 
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use ColissimoPickupPoint\WebService\FindByAddress;
+use OpenApi\Events\DeliveryModuleOptionEvent;
+use OpenApi\Events\OpenApiEvents;
+use OpenApi\Model\Api\DeliveryModuleOption;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Thelia\Core\Event\Delivery\PickupLocationEvent;
@@ -148,6 +151,22 @@ class APIListener implements EventSubscriberInterface
         }
     }
 
+    public function getDeliveryModuleOptions(DeliveryModuleOptionEvent $deliveryModuleOptionEvent)
+    {
+        $deliveryModuleOptionEvent->setDeliveryModuleOptions(
+            (new DeliveryModuleOption())
+                ->setCode('ColissimoPickupPoint')
+                ->setValid($isValid)
+                ->setTitle('Colissimo Pickup Point')
+                ->setImage('')
+                ->setMinimumDeliveryDate($minimumDeliveryDate)
+                ->setMaximumDeliveryDate($maximumDeliveryDate)
+                ->setPostage($postage)
+                ->setPostageTax($postageTax)
+                ->setPostageUntaxed($postage - $postageTax)
+        );
+    }
+
     public static function getSubscribedEvents()
     {
         $listenedEvents = [];
@@ -155,6 +174,10 @@ class APIListener implements EventSubscriberInterface
         /** Check for old versions of Thelia where the events used by the API didn't exists */
         if (class_exists(PickupLocation::class)) {
             $listenedEvents[TheliaEvents::MODULE_DELIVERY_GET_PICKUP_LOCATIONS] = array("getPickupLocations", 128);
+        }
+
+        if (class_exists(DeliveryModuleOptionEvent::class)) {
+            $listenedEvents[OpenApiEvents::MODULE_DELIVERY_GET_OPTIONS] = array("getDeliveryModuleOptions", 128);
         }
 
         return $listenedEvents;

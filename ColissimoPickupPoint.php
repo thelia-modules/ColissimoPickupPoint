@@ -33,6 +33,7 @@ use ColissimoPickupPoint\Model\ColissimoPickupPointPriceSlicesQuery;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Thelia\Model\Country;
+use Thelia\Model\CountryArea;
 use Thelia\Model\ModuleImageQuery;
 use Thelia\Model\ModuleQuery;
 use Propel\Runtime\Connection\ConnectionInterface;
@@ -82,21 +83,33 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
      */
     public function isValidDelivery(Country $country)
     {
-        $cartWeight = $this->getRequest()->getSession()->getSessionCart($this->getDispatcher())->getWeight();
+        if (empty($this->getAllAreasForCountry($country))) {
+            return false;
+        }
 
-        $areaId = $country->getAreaId();
+        $countryAreas = $country->getCountryAreas();
+        $areasArray = [];
+
+        /** @var CountryArea $countryArea */
+        foreach ($countryAreas as $countryArea) {
+            $areasArray[] = $countryArea->getAreaId();
+        }
 
         $prices = ColissimoPickupPointPriceSlicesQuery::create()
-            ->filterByAreaId($areaId)
-            ->findOne();
+            ->filterByAreaId($areasArray)
+            ->findOne()
+        ;
 
         $freeShipping = ColissimoPickupPointFreeshippingQuery::create()
-            ->findOneByActive(1);
+            ->filterByActive(1)
+            ->findOne()
+        ;
 
-        /* check if Colissimo delivers the asked area*/
+        /** Check if Colissimo delivers the asked area*/
         if (null !== $prices || null !== $freeShipping) {
             return true;
         }
+
         return false;
     }
 
