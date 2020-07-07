@@ -156,6 +156,10 @@ class APIListener implements EventSubscriberInterface
 
     public function getDeliveryModuleOptions(DeliveryModuleOptionEvent $deliveryModuleOptionEvent)
     {
+        if ($deliveryModuleOptionEvent->getModule()->getId() !== ColissimoPickupPoint::getModuleId()) {
+            return ;
+        }
+
         $isValid = true;
         $postage = null;
         $postageTax = null;
