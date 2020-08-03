@@ -43,6 +43,12 @@
             <argument type="service" id="event_dispatcher"/>
             <tag name="thelia.parser.register_plugin" />
         </service>
+
+        <service id="colissimo.pickup.point.google.map.key.smarty.plugin" class="ColissimoPickupPoint\Smarty\Plugins\ColissimoPickupPointGoogleApiKey" scope="request">
+            <argument type="service" id="request" />
+            <argument type="service" id="event_dispatcher"/>
+            <tag name="thelia.parser.register_plugin" />
+        </service>
     </services>
 
     <hooks>
