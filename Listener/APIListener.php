@@ -9,6 +9,7 @@ use ColissimoPickupPoint\WebService\FindByAddress;
 use OpenApi\Events\DeliveryModuleOptionEvent;
 use OpenApi\Events\OpenApiEvents;
 use OpenApi\Model\Api\DeliveryModuleOption;
+use OpenApi\Model\Api\ModelFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
@@ -22,11 +23,11 @@ use Thelia\Module\Exception\DeliveryException;
 
 class APIListener implements EventSubscriberInterface
 {
-    protected $container;
+    protected $modelFactory;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ModelFactory $modelFactory)
     {
-        $this->container = $container;
+        $this->modelFactory = $modelFactory;
     }
 
     /**
@@ -203,7 +204,7 @@ class APIListener implements EventSubscriberInterface
         $maximumDeliveryDate = ''; // TODO (calculate delivery date from day of order
 
         /** @var DeliveryModuleOption $deliveryModuleOption */
-        $deliveryModuleOption = ($this->container->get('open_api.model.factory'))->buildModel('DeliveryModuleOption');
+        $deliveryModuleOption = $this->modelFactory->buildModel('DeliveryModuleOption');
         $deliveryModuleOption
             ->setCode('ColissimoPickupPoint')
             ->setValid($isValid)
