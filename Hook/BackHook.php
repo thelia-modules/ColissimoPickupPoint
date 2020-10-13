@@ -20,4 +20,9 @@ class BackHook extends BaseHook
     {
         $event->add($this->render('module-config-js.html'));
     }
+
+    public function renderColishipExport(HookRenderEvent $event)
+    {
+        $event->add($this->render('order-edit-coliship-export.html'));
+    }
 }
