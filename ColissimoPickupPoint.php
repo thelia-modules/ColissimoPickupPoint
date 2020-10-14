@@ -331,12 +331,6 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
         }
 
         $this->checkModuleConfig();
-
-        /** Insert the images from image folder if first module activation */
-        $module = $this->getModuleModel();
-        if (ModuleImageQuery::create()->filterByModule($module)->count() === 0) {
-            $this->deployImageFolder($module, sprintf('%s/images', __DIR__), $con);
-        }
     }
 
     /** Return the module ID */
