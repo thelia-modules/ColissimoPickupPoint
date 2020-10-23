@@ -67,16 +67,23 @@ class SetDeliveryModule implements EventSubscriberInterface
 
     private function callWebServiceFindRelayPointByIdFromRequest(Request $request)
     {
-        $relay_infos = explode(':', $request->get('colissimo_pickup_point_code'));
+        if ($request->get('colissimo_pickup_point_code')) {
+            $relayInfos = explode(':', $request->get('colissimo_pickup_point_code'));
+            $relayCode = $relayInfos[0];
+            $relayType = count($relayInfos) > 1 ? $relayInfos[1] : null ;
+            $relayCountryCode = count($relayInfos) > 2 ? $relayInfos[2] : null ;
+        } elseif ($request->get('pickupAddress')) {
+            // The request sent by OpenApi is different
+            $relayInfos = $request->get('pickupAddress');
+            $relayCode = $relayInfos['id'];
+            $relayType = $relayInfos['type'] ?: null;
+            $relayCountryCode = $relayInfos['countryCode'] ?: null;
+        }
 
-        $pr_code = $relay_infos[0];
-        $relayType = count($relay_infos) > 1 ? $relay_infos[1] : null ;
-        $relayCountryCode = count($relay_infos) > 2 ? $relay_infos[2] : null ;
-
-        if (!empty($pr_code)) {
+        if (!empty($relayCode)) {
             $req = new FindById();
 
-            $req->setId($pr_code)
+            $req->setId($relayCode)
                 ->setLangue('FR')
                 ->setDate(date('d/m/Y'))
                 ->setAccountNumber(ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_USERNAME))
@@ -160,10 +167,10 @@ class SetDeliveryModule implements EventSubscriberInterface
         if ($this->check_module($event->getOrder()->getDeliveryModuleId())) {
             $request = $this->getRequest();
 
-            $tmp_address = AddressColissimoPickupPointQuery::create()
+            $tempAddress = AddressColissimoPickupPointQuery::create()
                 ->findPk($request->getSession()->get('ColissimoPickupPointDeliveryId'));
 
-            if ($tmp_address === null) {
+            if ($tempAddress === null) {
                 throw new \ErrorException('Got an error with ColissimoPickupPoint module. Please try again to checkout.');
             }
 
@@ -171,19 +178,19 @@ class SetDeliveryModule implements EventSubscriberInterface
 
             $savecode
                 ->setId($event->getOrder()->getDeliveryOrderAddressId())
-                ->setCode($tmp_address->getCode())
-                ->setType($tmp_address->getType())
+                ->setCode($tempAddress->getCode())
+                ->setType($tempAddress->getType())
                 ->save()
             ;
 
             $update = OrderAddressQuery::create()
                 ->findPK($event->getOrder()->getDeliveryOrderAddressId())
-                ->setCompany($tmp_address->getCompany())
-                ->setAddress1($tmp_address->getAddress1())
-                ->setAddress2($tmp_address->getAddress2())
-                ->setAddress3($tmp_address->getAddress3())
-                ->setZipcode($tmp_address->getZipcode())
-                ->setCity($tmp_address->getCity())
+                ->setCompany($tempAddress->getCompany())
+                ->setAddress1($tempAddress->getAddress1())
+                ->setAddress2($tempAddress->getAddress2())
+                ->setAddress3($tempAddress->getAddress3())
+                ->setZipcode($tempAddress->getZipcode())
+                ->setCity($tempAddress->getCity())
                 ->save()
             ;
         }
@@ -242,7 +249,7 @@ class SetDeliveryModule implements EventSubscriberInterface
     {
         return array(
             TheliaEvents::ORDER_SET_DELIVERY_MODULE => array('isModuleColissimoPickupPoint', 64),
-            TheliaEvents::ORDER_BEFORE_PAYMENT => array('updateDeliveryAddress', 256),
+            TheliaEvents::ORDER_BEFORE_PAYMENT => array('updateDeliveryAddress', 255),
             TheliaEvents::MODULE_DELIVERY_GET_POSTAGE => array('getPostageRelayPoint', 257)
         );
     }
