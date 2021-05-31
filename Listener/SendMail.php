@@ -26,6 +26,7 @@ namespace ColissimoPickupPoint\Listener;
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
 use Thelia\Core\Template\ParserInterface;
@@ -47,11 +48,11 @@ class SendMail implements EventSubscriberInterface
     protected $request;
     protected $mailer;
 
-    public function __construct(ParserInterface $parser, MailerFactory $mailer, Request $request)
+    public function __construct(ParserInterface $parser, MailerFactory $mailer, RequestStack $requestStack)
     {
         $this->parser = $parser;
         $this->mailer = $mailer;
-        $this->request = $request;
+        $this->request = $requestStack->getCurrentRequest();
     }
 
     public function updateStatus(OrderEvent $event)
