@@ -25,12 +25,16 @@ namespace ColissimoPickupPoint\Listener;
 
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
 use Thelia\Core\Template\ParserInterface;
 use Thelia\Mailer\MailerFactory;
 use Thelia\Model\ConfigQuery;
+use Thelia\Model\LangQuery;
 use Thelia\Model\MessageQuery;
+use Thelia\Model\OrderAddressQuery;
 
 /**
  * Class SendMail
@@ -41,13 +45,14 @@ class SendMail implements EventSubscriberInterface
 {
 
     protected $parser;
-
+    protected $request;
     protected $mailer;
 
-    public function __construct(ParserInterface $parser, MailerFactory $mailer)
+    public function __construct(ParserInterface $parser, MailerFactory $mailer, RequestStack $requestStack)
     {
         $this->parser = $parser;
         $this->mailer = $mailer;
+        $this->request = $requestStack->getCurrentRequest();
     }
 
     public function updateStatus(OrderEvent $event)
@@ -61,21 +66,52 @@ class SendMail implements EventSubscriberInterface
             if ($contact_email) {
 
                 $message = MessageQuery::create()
-                    ->filterByName('mail_colissimo_pickup_point')
+                    ->filterByName(ColissimoPickupPoint::CONFIRMATION_MESSAGE_NAME)
                     ->findOne();
 
                 if (false === $message || null === $message) {
-                    throw new \Exception("Failed to load message 'order_confirmation'.");
+                    throw new \Exception("Failed to load message ".ColissimoPickupPoint::CONFIRMATION_MESSAGE_NAME.".");
                 }
 
                 $order = $event->getOrder();
                 $customer = $order->getCustomer();
+
+                // Configured site URL
+                $urlSite =  ConfigQuery::read('url_site');
+
+                // for one domain by lang
+                if ((int) ConfigQuery::read('one_domain_foreach_lang', 0) === 1) {
+                    // We always query the DB here, as the Lang configuration (then the related URL) may change during the
+                    // user session lifetime, and improper URLs could be generated. This is quite odd, okay, but may happen.
+                    $urlSite = LangQuery::create()->findPk($this->request->getSession()->getLang()->getId())->getUrl();
+                }
+
+                $orderDeliveryAddress = OrderAddressQuery::create()
+                    ->filterById($order->getDeliveryOrderAddressId())
+                    ->findOne();
+
+                $pickupName = $orderDeliveryAddress->getCompany();
+                $pickupAddress1 = $orderDeliveryAddress->getAddress1();
+                $pickupAddress2 = $orderDeliveryAddress->getAddress2();
+                $pickupAddress3 = $orderDeliveryAddress->getAddress3();
+                $pickupZipCode = $orderDeliveryAddress->getZipcode();
+                $pickupCity = $orderDeliveryAddress->getCity();
+                $pickupCellphone = $orderDeliveryAddress->getCellphone();
 
                 $this->parser->assign('customer_id', $customer->getId());
                 $this->parser->assign('order_ref', $order->getRef());
                 $this->parser->assign('order_date', $order->getCreatedAt());
                 $this->parser->assign('update_date', $order->getUpdatedAt());
                 $this->parser->assign('package', $order->getDeliveryRef());
+                $this->parser->assign('store_name', ConfigQuery::read('store_name'));
+                $this->parser->assign('store_url', $urlSite);
+                $this->parser->assign('pickup_name', $pickupName);
+                $this->parser->assign('pickup_address1', $pickupAddress1);
+                $this->parser->assign('pickup_address2', $pickupAddress2);
+                $this->parser->assign('pickup_address3', $pickupAddress3);
+                $this->parser->assign('pickup_zipcode', $pickupZipCode);
+                $this->parser->assign('pickup_city', $pickupCity);
+                $this->parser->assign('pickup_cellphone', $pickupCellphone);
 
                 $message
                     ->setLocale($order->getLang()->getLocale());

@@ -1,0 +1,44 @@
+{extends file="email-layout.tpl"}
+
+{* Do not provide a "Open in browser" link  *}
+{block name="browser"}{/block}
+{* No pre-header *}
+{block name="pre-header"}{/block}
+
+{* Subject  *}
+{block name="email-subject"}{intl d='colissimopickuppoint.email.default' l="Your order confirmation Nº %ref" ref={$order_ref}}{/block}
+
+{* Title  *}
+{block name="email-title"}{/block}
+
+{* Content  *}
+{block name="email-content"}
+
+    {loop type="customer" name="customer.politesse" id={$customer_id} current="0"}
+    {assign var="customerRef" value=$REF}
+
+        <p>{intl l="Hello" d='colissimopickuppoint.email.default'}
+            {$FIRSTNAME} {$LASTNAME},
+        </p>
+
+    {/loop}
+
+    <p>{intl d='colissimopickuppoint.email.default' l="We are pleased to inform you that your order number"} {$order_ref} {intl d='colissimopickuppoint.email.default' l="has been shipped on"} {format_date date=$update_date output="date"}.</p>
+    <p>{intl d='colissimopickuppoint.email.default' l="Your order has been taking care of by La Poste."} {intl d='colissimopickuppoint.email.default' l="Your tracking number is "} <strong>{$package}</strong> {intl d='colissimopickuppoint.email.default' l=' and allows you to follow your package online at <a href="https://www.colissimo.fr/portail_colissimo/suivreResultat.do?parcelnumber=%package">https://www.colissimo.fr/portail_colissimo/suivreResultat</a>' package=$package}</p>
+    <p>{intl d='colissimopickuppoint.email.default' l="Upon receipt, you can withdraw your order in your pickup point:"}</p>
+    <p>
+        <strong>{$pickup_name}<br/></strong>
+        {$pickup_address1}<br/>
+        {if $pickup_address2 != ''}
+            {$pickup_address2}<br/>
+        {/if}
+        {if $pickup_address3 != ''}
+            {$pickup_address3}<br/>
+        {/if}
+        {$pickup_zipcode} - {$pickup_city}<br/>
+        {$pickup_cellphone}
+    </p>
+    <p>{intl d='colissimopickuppoint.email.default' l='Thank you for your shopping with us and hope to see you soon'}{if $store_url != ''}{intl d='colissimopickuppoint.email.default' l=' on '}<a href="{$store_url}">{$store_url}</a>{else}.{/if}</p>
+    <p>{intl d='colissimopickuppoint.email.default' l="See you soon,"}<br/>
+        {intl d='colissimopickuppoint.email.default' l="Your shop "} {$store_name}</p>
+{/block}

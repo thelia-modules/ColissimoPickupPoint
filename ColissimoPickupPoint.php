@@ -34,6 +34,8 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Thelia\Model\Country;
 use Thelia\Model\CountryArea;
+use Thelia\Model\Message;
+use Thelia\Model\MessageQuery;
 use Thelia\Model\ModuleImageQuery;
 use Thelia\Model\ModuleQuery;
 use Propel\Runtime\Connection\ConnectionInterface;
@@ -52,6 +54,8 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
     const DOMAIN = 'colissimopickuppoint';
 
     const COLISSIMO_USERNAME = 'colissimo_pickup_point_username';
+
+    const CONFIRMATION_MESSAGE_NAME = 'mail_colissimo_pickup_point';
 
     const COLISSIMO_PASSWORD = 'colissimo_pickup_point_password';
 
@@ -323,7 +327,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
             ColissimoPickupPointFreeshippingQuery::create()->findOne();
         } catch (\Exception $e) {
             $database = new Database($con->getWrappedConnection());
-            $database->insertSql(null, [__DIR__ . '/Config/thelia.sql', __DIR__ . '/Config/insert.sql']);
+            $database->insertSql(null, [__DIR__ . '/Config/thelia.sql']);
         }
 
         if (!ColissimoPickupPointFreeshippingQuery::create()->filterById(1)->findOne()) {
@@ -331,6 +335,25 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
         }
 
         $this->checkModuleConfig();
+
+        if (null === MessageQuery::create()->findOneByName(self::CONFIRMATION_MESSAGE_NAME)) {
+            $message = new Message();
+
+            $message
+                ->setName(self::CONFIRMATION_MESSAGE_NAME)
+                ->setHtmlLayoutFileName('order_shipped_pp.html')
+                ->setTextLayoutFileName('order_shipped_pp.txt')
+                ->setLocale('en_US')
+                ->setTitle('Order send confirmation')
+                ->setSubject('Order send confirmation')
+
+                ->setLocale('fr_FR')
+                ->setTitle('Confirmation d\'envoi de commande')
+                ->setSubject('Confirmation d\'envoi de commande')
+
+                ->save()
+            ;
+        }
     }
 
     /** Return the module ID */
