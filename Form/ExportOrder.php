@@ -117,7 +117,7 @@ class ExportOrder extends BaseForm
      */
     public static function getName()
     {
-        return 'exportcolissimopickuppointorder';
+        return 'colissimopickuppoint_export_order_form';
     }
 
 }

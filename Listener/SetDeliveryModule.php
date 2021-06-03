@@ -26,6 +26,7 @@ namespace ColissimoPickupPoint\Listener;
 use ColissimoPickupPoint\Utils\ColissimoCodeReseau;
 use ColissimoPickupPoint\WebService\FindById;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\Event\Delivery\DeliveryPostageEvent;
 use Thelia\Core\Event\TheliaEvents;
 
@@ -50,9 +51,9 @@ class SetDeliveryModule implements EventSubscriberInterface
 {
     protected $request;
 
-    public function __construct(Request $request)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->request = $request;
+        $this->request = $requestStack->getCurrentRequest();
     }
 
     public function getRequest()

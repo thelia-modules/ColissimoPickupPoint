@@ -82,7 +82,7 @@ class FreeShippingForm extends BaseForm
      */
     public static function getName()
     {
-        return 'colissimopickuppointfreeshipping';
+        return 'colissimopickuppoint_freeshipping_form';
     }
 
 }

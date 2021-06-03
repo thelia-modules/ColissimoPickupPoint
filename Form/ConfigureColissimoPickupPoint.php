@@ -116,6 +116,6 @@ class ConfigureColissimoPickupPoint extends BaseForm
      */
     public static function getName()
     {
-        return 'configurecolissimopickuppoint';
+        return 'colissimopickuppoint_configure_form';
     }
 }

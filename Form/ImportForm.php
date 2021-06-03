@@ -17,7 +17,7 @@ class ImportForm extends BaseForm
 {
     public static function getName()
     {
-        return 'import_form';
+        return 'colissimopickuppoint_import_form';
     }
 
     protected function buildForm()

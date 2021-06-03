@@ -4,7 +4,9 @@ namespace ColissimoPickupPoint\Smarty\Plugins;
 
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\HttpFoundation\Request;
+use Thelia\Core\HttpFoundation\Session\Session;
 use Thelia\Model\CountryArea;
 use Thelia\Model\CountryQuery;
 use Thelia\Model\Country;
@@ -18,18 +20,18 @@ class ColissimoPickupPointDeliveryPrice extends AbstractSmartyPlugin
     protected $dispatcher;
 
     public function __construct(
-        Request $request,
+        RequestStack $requestStack,
         EventDispatcherInterface $dispatcher = null
     ) {
-        $this->request = $request;
+        $this->request = $requestStack->getCurrentRequest();
         $this->dispatcher = $dispatcher;
     }
 
     public function getPluginDescriptors()
     {
-        return array(
+        return [
             new SmartyPluginDescriptor('function', 'colissimoPickupPointDeliveryPrice', $this, 'colissimoPickupPointDeliveryPrice')
-        );
+        ];
     }
 
     public function colissimoPickupPointDeliveryPrice($params, $smarty)

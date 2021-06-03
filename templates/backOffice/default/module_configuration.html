@@ -63,7 +63,7 @@
                                 <button id="reverse-all-but" title="{intl l="Reverse selection" d='colissimo.pickup.point.bo.default'}" class="form-submit-button btn btn-sm btn-default">{intl l="Reverse selection" d='colissimo.pickup.point.bo.default'}</button>
                             </div>
                         </div>
-                        {form name="colissimo.pickup.point.export"}
+                        {form name="colissimopickuppoint_export_order_form"}
                             <form action="{url path='/admin/module/ColissimoPickupPoint/export'}" method="post">
                                 {form_hidden_fields form=$form}
                                 <div class="panel panel-default">
@@ -184,7 +184,7 @@
                                     </div>
                                 {/flash}
 
-                                {form name='colissimo.pickup.point.import'}
+                                {form name='colissimopickuppoint_import_form'}
                                     <form action="{url path='/admin/module/ColissimoPickupPoint/import'}" method="post" {form_enctype form=$form}>
                                         {form_hidden_fields form=$form}
                                         {render_form_field form=$form field="success_url" value={url path="/admin/module/ColissimoPickupPoint"} current_tab="import"}
@@ -217,7 +217,7 @@
                             </div>
 
                             <div class="panel-body">
-                                {form name="colissimo.pickup.point.configure"}
+                                {form name="colissimopickuppoint_configure_form"}
                                 {if $form_error && $form_error_message}
                                     <div class="alert alert-danger">{$form_error_message}</div>
                                 {/if}
@@ -264,7 +264,7 @@
                             <div class="row">
                                 <!-- checkbox free shipping -->
                                 {assign var="isColissimoPickupPointFreeShipping" value=0}
-                                {form  name="colissimo.pickup.point.freeshipping.form"}
+                                {form  name="colissimopickuppoint_freeshipping_form"}
                                 <form action='{url path="/admin/module/ColissimoPickupPoint/freeshipping"}' method="post" id="freeshippingform">
                                     <div class="col-md-4">
                                         {form_hidden_fields form=$form}

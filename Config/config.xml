@@ -17,41 +17,13 @@
     </loops>
 
     <forms>
-        <form name="colissimo.pickup.point.freeshipping.form" class="ColissimoPickupPoint\Form\FreeShippingForm" />
-        <form name="colissimo.pickup.point.configure" class="ColissimoPickupPoint\Form\ConfigureColissimoPickupPoint" />
-        <form name="colissimo.pickup.point.export" class="ColissimoPickupPoint\Form\ExportOrder" />
-        <form name="colissimo.pickup.point.import" class="ColissimoPickupPoint\Form\ImportForm"/>
-        <form name="colissimo.pickup.point.add.price.form" class="ColissimoPickupPoint\Form\AddPriceForm" />
-        <form name="colissimo.pickup.point.update.price.form" class="ColissimoPickupPoint\Form\UpdatePriceForm" />
+        <form name="colissimopickuppoint_freeshipping_form" class="ColissimoPickupPoint\Form\FreeShippingForm" />
+        <form name="colissimopickuppoint_configure_form" class="ColissimoPickupPoint\Form\ConfigureColissimoPickupPoint" />
+        <form name="colissimopickuppoint_export_order_form" class="ColissimoPickupPoint\Form\ExportOrder" />
+        <form name="colissimopickuppoint_import_form" class="ColissimoPickupPoint\Form\ImportForm"/>
+        <form name="colissimopickuppoint_price_slices_create_form" class="ColissimoPickupPoint\Form\AddPriceForm" />
+        <form name="colissimopickuppoint_update_price_form" class="ColissimoPickupPoint\Form\UpdatePriceForm" />
     </forms>
-
-    <services>
-        <service id="hook.order.module.colissimo.pickup.point" class="ColissimoPickupPoint\Listener\SetDeliveryModule" scope="request">
-            <argument type="service" id="request"/>
-            <tag name="kernel.event_subscriber"/>
-        </service>
-        <service id="send.colissimo.pickup.point.mail" class="ColissimoPickupPoint\Listener\SendMail" scope="request">
-            <argument type="service" id="thelia.parser" />
-            <argument type="service" id="mailer"/>
-            <argument type="service" id="request_stack" />
-            <tag name="kernel.event_subscriber"/>
-        </service>
-        <service id="api.colissimo.pickup.point" class="ColissimoPickupPoint\Listener\APIListener" scope="request">
-            <argument type="service" id="service_container"/>
-            <tag name="kernel.event_subscriber"/>
-        </service>
-        <service id="colissimo.pickup.point.price.smarty.plugin" class="ColissimoPickupPoint\Smarty\Plugins\ColissimoPickupPointDeliveryPrice" scope="request">
-            <argument type="service" id="request" />
-            <argument type="service" id="event_dispatcher"/>
-            <tag name="thelia.parser.register_plugin" />
-        </service>
-
-        <service id="colissimo.pickup.point.google.map.key.smarty.plugin" class="ColissimoPickupPoint\Smarty\Plugins\ColissimoPickupPointGoogleApiKey" scope="request">
-            <argument type="service" id="request" />
-            <argument type="service" id="event_dispatcher"/>
-            <tag name="thelia.parser.register_plugin" />
-        </service>
-    </services>
 
     <hooks>
         <hook id="colissimo.pickup.point.hook.back" class="ColissimoPickupPoint\Hook\BackHook">
