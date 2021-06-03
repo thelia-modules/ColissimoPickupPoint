@@ -24,6 +24,8 @@
 namespace ColissimoPickupPoint\Form;
 use Propel\Runtime\ActiveQuery\Criteria;
 use ColissimoPickupPoint\ColissimoPickupPoint;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Thelia\Form\BaseForm;
 use Thelia\Model\Base\OrderQuery;
 use Thelia\Core\Translation\Translator;
@@ -78,12 +80,12 @@ class ExportOrder extends BaseForm
             ->find();
 
         $this->formBuilder
-            ->add('new_status_id', 'choice',array(
+            ->add('new_status_id', ChoiceType::class,array(
                     'label' => Translator::getInstance()->trans('server'),
                     'choices' => array(
-                        'nochange' => Translator::getInstance()->trans('Do not change'),
-                        'processing' => Translator::getInstance()->trans('Set orders status as processing'),
-                        'sent' => Translator::getInstance()->trans('Set orders status as sent')
+                        Translator::getInstance()->trans('Do not change') => 'nochange',
+                        Translator::getInstance()->trans('Set orders status as processing') => 'processing',
+                        Translator::getInstance()->trans('Set orders status as sent') => 'sent'
                     ),
                     'required' => 'true',
                     'expanded' => true,
@@ -96,7 +98,7 @@ class ExportOrder extends BaseForm
             $this->formBuilder
                 ->add(
                     'order_' . $order->getId(),
-                    'checkbox',
+                    CheckboxType::class,
                     [
                         'label' => $order->getRef(),
                         'label_attr' => ['for' => 'export_' . $order->getId()]
@@ -113,7 +115,7 @@ class ExportOrder extends BaseForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public function getName()
+    public static function getName()
     {
         return 'exportcolissimopickuppointorder';
     }

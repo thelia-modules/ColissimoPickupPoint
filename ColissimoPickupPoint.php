@@ -318,7 +318,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
         }
     }
 
-    public function postActivation(ConnectionInterface $con = null)
+    public function postActivation(ConnectionInterface $con = null): void
     {
         try {
             // Security to not erase user config on reactivation
@@ -365,7 +365,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
     /**
      * @inheritDoc
      */
-    public function update($currentVersion, $newVersion, ConnectionInterface $con = null)
+    public function update($currentVersion, $newVersion, ConnectionInterface $con = null): void
     {
         $this->checkModuleConfig();
 

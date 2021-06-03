@@ -2,6 +2,7 @@
 
 namespace ColissimoPickupPoint\Controller;
 
+use ColissimoPickupPoint\Form\ImportForm;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Propel;
 use ColissimoPickupPoint\ColissimoPickupPoint;
@@ -29,7 +30,7 @@ class ImportController extends BaseAdminController
         $con = Propel::getWriteConnection(OrderTableMap::DATABASE_NAME);
         $con->beginTransaction();
 
-        $form = $this->createForm('colissimo.pickup.point.import');
+        $form = $this->createForm(ImportForm::getName());
 
         try {
             $vForm = $this->validateForm($form);
@@ -109,7 +110,7 @@ class ImportController extends BaseAdminController
             // Check if delivery refs are different
             if ($order->getDeliveryRef() != $deliveryRef) {
                 $event->setDeliveryRef($deliveryRef);
-                $this->getDispatcher()->dispatch(TheliaEvents::ORDER_UPDATE_DELIVERY_REF, $event);
+                $this->getDispatcher()->dispatch($event, TheliaEvents::ORDER_UPDATE_DELIVERY_REF);
 
                 $sentStatusId = OrderStatusQuery::create()
                     ->filterByCode('sent')
@@ -119,7 +120,7 @@ class ImportController extends BaseAdminController
                 // Set 'sent' order status if not already sent
                 if ($sentStatusId != null && $order->getStatusId() != $sentStatusId) {
                     $event->setStatus($sentStatusId);
-                    $this->getDispatcher()->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
+                    $this->getDispatcher()->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
                 }
 
                 $i++;

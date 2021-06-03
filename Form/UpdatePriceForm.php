@@ -3,6 +3,8 @@
 namespace ColissimoPickupPoint\Form;
 
 use ColissimoPickupPoint\ColissimoPickupPoint;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Validator\Constraints;
 
 use Symfony\Component\Validator\ExecutionContextInterface;
@@ -15,34 +17,30 @@ class UpdatePriceForm extends BaseForm
     protected function buildForm()
     {
         $this->formBuilder
-            ->add('area', 'integer', array(
+            ->add('area', IntegerType::class, array(
                 'constraints' => array(
                     new Constraints\NotBlank(),
-                    new Constraints\Callback(array(
-                        'methods' => array(
+                    new Constraints\Callback(
                             array($this,
                                 'verifyAreaExist')
-                        )
-                    ))
+                    )
                 )
             ))
-            ->add('weight', 'number', array(
+            ->add('weight', NumberType::class, array(
                 'constraints' => array(
                     new Constraints\NotBlank(),
                 )
             ))
-            ->add('price', 'number', array(
+            ->add('price', NumberType::class, array(
                 'constraints' => array(
                     new Constraints\NotBlank(),
-                    new Constraints\Callback(array(
-                        'methods' => array(
+                    new Constraints\Callback(
                             array($this,
                                 'verifyValidPrice')
-                        )
-                    ))
+                    )
                 )
             ))
-            ->add('franco', 'number', array())
+            ->add('franco', NumberType::class, array())
         ;
     }
 
@@ -61,7 +59,7 @@ class UpdatePriceForm extends BaseForm
         }
     }
 
-    public function getName()
+    public static function getName()
     {
         return 'colissimo_pickup_point_price_slices_create';
     }

@@ -3,6 +3,7 @@
 namespace ColissimoPickupPoint\Form;
 
 use ColissimoPickupPoint\ColissimoPickupPoint;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
@@ -14,7 +15,7 @@ use Thelia\Form\BaseForm;
  */
 class ImportForm extends BaseForm
 {
-    public function getName()
+    public static function getName()
     {
         return 'import_form';
     }
@@ -23,7 +24,7 @@ class ImportForm extends BaseForm
     {
         $this->formBuilder
             ->add(
-                'import_file', 'file',
+                'import_file', FileType::class,
                 [
                     'label' => Translator::getInstance()->trans('Select file to import', [], ColissimoPickupPoint::DOMAIN),
                     'constraints' => [

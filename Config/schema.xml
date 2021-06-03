@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database defaultIdMethod="native" name="thelia" namespace="ColissimoPickupPoint\Model">
+<database defaultIdMethod="native" name="TheliaMain" namespace="ColissimoPickupPoint\Model">
 
     <table name="address_colissimo_pickup_point">
         <column name="id" primaryKey="true" required="true" type="INTEGER" />

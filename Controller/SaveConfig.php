@@ -19,7 +19,7 @@ class SaveConfig extends BaseAdminController
             return $response;
         }
 
-        $form = new ConfigureColissimoPickupPoint($this->getRequest());
+        $form = $this->createForm(ConfigureColissimoPickupPoint::getName());
         try {
             $vform = $this->validateForm($form);
 

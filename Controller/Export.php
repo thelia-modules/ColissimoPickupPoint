@@ -65,7 +65,7 @@ class Export extends BaseAdminController
         $csv = new CSV(self::CSV_SEPARATOR);
 
         try {
-            $form  = new ExportOrder($this->getRequest());
+            $form  = $this->createForm(ExportOrder::getName());
             $vform = $this->validateForm($form);
 
             // Check status_id
@@ -222,11 +222,11 @@ class Export extends BaseAdminController
                     if ($status_id === 'processing') {
                         $event = new OrderEvent($order);
                         $event->setStatus($status[OrderStatus::CODE_PROCESSING]['Id']);
-                        $this->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
+                        $this->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
                     } elseif ($status_id === 'sent') {
                         $event = new OrderEvent($order);
                         $event->setStatus($status[OrderStatus::CODE_SENT]['Id']);
-                        $this->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
+                        $this->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
                     }
 
                 }
