@@ -47,7 +47,7 @@
                 <ul id="tabbed-menu" class="nav nav-tabs">
                     <li class="{if $tab eq "export"}active{/if}"><a data-toggle="tab" href="#export">{intl l="Export Coliship file" d='colissimo.pickup.point.bo.default'}</a> </li>
                     <li class="{if $tab eq "import"}active{/if}"><a data-toggle="tab" href="#import">{intl l="Import Coliship file" d='colissimo.pickup.point.bo.default'}</a> </li>
-                    <li class="{if $tab eq "prices_slices_tab}"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab">{intl l="Price slices (Pickup Point)" d='colissimo.pickup.point.bo.default' mode={$TITLE}}</a></li>
+                    <li class="{if $tab eq "prices_slices_tab}"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab">{intl l="Price slices (Pickup Point)" d='colissimo.pickup.point.bo.default' mode={$TITLE|default:null}}</a></li>
                     <li class="{if $tab eq "configure"}active{/if}"><a data-toggle="tab" href="#configure">{intl l="Advanced configuration" d='colissimo.pickup.point.bo.default'}</a></li>
                 </ul>
 
@@ -256,7 +256,7 @@
                     </div>
 
                         <div id="prices_slices_tab" class="tab-pane {if $tab eq "prices_slices_tab" }active{/if} form-container">
-                            {if null !== $smarty.get.price_error}
+                            {if null !== $smarty.get.price_error|default:null}
                                 <div class="alert alert-danger" role="alert">{$smarty.get.price_error}</div>
                             {/if}
                             <br/>
