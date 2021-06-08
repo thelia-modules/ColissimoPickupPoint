@@ -1,4 +1,4 @@
-{loop name="check.module.colissimo.pickup.point.order.edit" type="order" id=$ID status="2,3"}
+{loop name="check.module.colissimo.pickup.point.order.edit" type="order" id=$ID|default:null status="2,3"}
 {loop name="check.module.colissimo.pickup.point.id" type="colissimo.pickup.point.id"}
     {if $MODULE_ID == $DELIVERY_MODULE}
     <br/>
