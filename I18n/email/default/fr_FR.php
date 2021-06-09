@@ -9,7 +9,7 @@ return array(
     'Your order has been taking care of by La Poste.' => 'Votre commande a été prise en charge par La Poste.',
     'Your order confirmation Nº %ref' => 'Votre commande N° %ref',
     'Your shop ' => 'L\'équipe ',
-    'has been shipped on' => 'a été envoyé avec succès le',
+    'has been shipped on' => 'a été envoyée avec succès le',
     'Your tracking number is ' => 'Votre numéro de suivi est ',
     'See you soon,' => 'À très vite,',
     ' on ' => ' sur ',
