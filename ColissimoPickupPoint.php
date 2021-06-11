@@ -218,7 +218,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
         $request = $this->getRequest();
 
         $cartWeight = $request->getSession()->getSessionCart($this->getDispatcher())->getWeight();
-        $cartAmount = $request->getSession()->getSessionCart($this->getDispatcher())->getTaxedAmount($country);
+        $cartAmount = $request->getSession()->getSessionCart($this->getDispatcher())->getTaxedAmount($country, false);
 
         $areaIdArray = $this->getAllAreasForCountry($country);
         if (empty($areaIdArray)) {
