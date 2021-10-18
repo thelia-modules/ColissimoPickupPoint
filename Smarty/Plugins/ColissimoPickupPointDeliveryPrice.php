@@ -44,24 +44,17 @@ class ColissimoPickupPointDeliveryPrice extends AbstractSmartyPlugin
         $cartWeight = $this->request->getSession()->getSessionCart($this->dispatcher)->getWeight();
         $cartAmount = $this->request->getSession()->getSessionCart($this->dispatcher)->getTaxedAmount($country);
 
-        $countryAreas = $country->getCountryAreas();
-        $areasArray = [];
-
-        /** @var CountryArea $countryArea */
-        foreach ($countryAreas as $countryArea) {
-            $areasArray[] = $countryArea->getAreaId();
-        }
-
         try {
-            $price = (new ColissimoPickupPoint)->getMinPostage(
-                $areasArray,
+            $orderPostage = (new ColissimoPickupPoint)->getMinPostage(
+                $country,
                 $cartWeight,
-                $cartAmount
+                $cartAmount,
+                $this->request->getSession()->getLang()->getLocale()
             );
         } catch (DeliveryException $ex) {
             $smarty->assign('isValidMode', false);
         }
 
-        $smarty->assign('deliveryPrice', $price);
+        $smarty->assign('deliveryPrice', $orderPostage->getAmount());
     }
 }

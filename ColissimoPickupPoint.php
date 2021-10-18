@@ -41,11 +41,13 @@ use Thelia\Model\ModuleImageQuery;
 use Thelia\Model\ModuleQuery;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Thelia\Install\Database;
+use Thelia\Model\State;
 use Thelia\Module\AbstractDeliveryModule;
+use Thelia\Module\AbstractDeliveryModuleWithState;
 use Thelia\Module\Exception\DeliveryException;
 use Thelia\Tools\Version\Version;
 
-class ColissimoPickupPoint extends AbstractDeliveryModule
+class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
 {
     protected $request;
     protected $dispatcher;
@@ -86,7 +88,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
      * @return boolean
      * @throws PropelException
      */
-    public function isValidDelivery(Country $country)
+    public function isValidDelivery(Country $country, State $state = null)
     {
         if (empty($this->getAllAreasForCountry($country))) {
             return false;
@@ -214,28 +216,29 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
      * @throws DeliveryException
      * @throws PropelException
      */
-    public function getPostage(Country $country)
+    public function getPostage(Country $country, State $state = null)
     {
         $request = $this->getRequest();
 
         $cartWeight = $request->getSession()->getSessionCart($this->getDispatcher())->getWeight();
         $cartAmount = $request->getSession()->getSessionCart($this->getDispatcher())->getTaxedAmount($country);
 
-        $areaIdArray = $this->getAllAreasForCountry($country);
-        if (empty($areaIdArray)) {
-            throw new DeliveryException('Your delivery country is not covered by Colissimo.');
-        }
 
-        if (null === $postage = $this->getMinPostage($areaIdArray, $cartWeight, $cartAmount)) {
+        if (null === $postage = $this->getMinPostage($country, $cartWeight, $cartAmount, $request->getSession()->getLang()->getLocale())) {
             throw new DeliveryException('Colissimo delivery unavailable for your cart weight or delivery country');
         }
 
         return $postage;
     }
 
-    public function getMinPostage($areaIdArray, $cartWeight, $cartAmount)
+    public function getMinPostage($country, $cartWeight, $cartAmount, $lang)
     {
         $minPostage = null;
+
+        $areaIdArray = $this->getAllAreasForCountry($country);
+        if (empty($areaIdArray)) {
+            throw new DeliveryException('Your delivery country is not covered by Colissimo.');
+        }
 
         foreach ($areaIdArray as $areaId) {
             try {
@@ -258,7 +261,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModule
             throw new DeliveryException("Colissimo delivery unavailable for your cart weight or delivery country");
         }
 
-        return $minPostage;
+        return $this->buildOrderPostage($minPostage, $country, $lang);
     }
 
     /**

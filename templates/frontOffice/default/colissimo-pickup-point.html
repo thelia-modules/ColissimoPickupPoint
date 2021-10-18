@@ -7,8 +7,8 @@
             {* Point relais *}
             {* Check if Colissimo webservice is up *}
             {assign var="isColissimoPickupPointUp" value=0}
-            {colissimoPickupPointDeliveryPrice country=$country}<h1>{$isValidMode}</h1>
-            {if $isValidMode !== false}
+            {colissimoPickupPointDeliveryPrice country=$country}<h1>{$isValidMode|default:true}</h1>
+            {if $isValidMode|default:true !== false}
             {loop name="is.colissimo.pickup.point.up"  type="colissimo.pickup.point.around"}{/loop}
             {ifloop rel="is.colissimo.pickup.point.up"}
                 <div class="panel panel-default">
@@ -376,8 +376,8 @@
                                             <select id="search-countryid-colissimo-pickup-point" class="form-control">
                                             {loop type="country" name="country.list"}
                                             <option value="{$ID}"
-                                                {if $value != ""}
-                                                    {if $value == $ID}selected{/if}
+                                                {if $value|default:null != ""}
+                                                    {if $value|default:null == $ID}selected{/if}
                                                 {else}
                                                     {if $IS_DEFAULT}selected{/if}
                                                 {/if}
