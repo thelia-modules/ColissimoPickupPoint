@@ -181,32 +181,18 @@ class APIListener implements EventSubscriberInterface
         }
 
         $isValid = true;
-        $postage = null;
-        $postageTax = null;
 
         try {
             $module = new ColissimoPickupPoint();
             $country = $deliveryModuleOptionEvent->getCountry();
 
-            if (empty($module->getAllAreasForCountry($country))) {
-                throw new DeliveryException(Translator::getInstance()->trans("Your delivery country is not covered by Colissimo"));
-            }
-
-            $countryAreas = $country->getCountryAreas();
-            $areasArray = [];
-
-            /** @var CountryArea $countryArea */
-            foreach ($countryAreas as $countryArea) {
-                $areasArray[] = $countryArea->getAreaId();
-            }
-
-            $postage = $module->getMinPostage(
-                $areasArray,
+            $orderPostage = $module->getMinPostage(
+                $country,
                 $deliveryModuleOptionEvent->getCart()->getWeight(),
-                $deliveryModuleOptionEvent->getCart()->getTaxedAmount($country)
+                $deliveryModuleOptionEvent->getCart()->getTaxedAmount($country),
+                $this->requestStack->getCurrentRequest()->getSession()->getLang()->getLocale()
             );
 
-            $postageTax = 0; //TODO
         } catch (\Exception $exception) {
             $isValid = false;
         }
@@ -223,9 +209,9 @@ class APIListener implements EventSubscriberInterface
             ->setImage('')
             ->setMinimumDeliveryDate($minimumDeliveryDate)
             ->setMaximumDeliveryDate($maximumDeliveryDate)
-            ->setPostage($postage)
-            ->setPostageTax($postageTax)
-            ->setPostageUntaxed($postage - $postageTax)
+            ->setPostage(($orderPostage) ? $orderPostage->getAmount() : 0)
+            ->setPostageTax(($orderPostage) ? $orderPostage->getAmountTax() : 0)
+            ->setPostageUntaxed(($orderPostage) ? $orderPostage->getAmount() - $orderPostage->getAmountTax() : 0)
         ;
 
         $deliveryModuleOptionEvent->appendDeliveryModuleOptions($deliveryModuleOption);
