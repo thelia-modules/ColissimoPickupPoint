@@ -181,7 +181,8 @@ class APIListener implements EventSubscriberInterface
         }
 
         $isValid = true;
-
+        $orderPostage = null;
+        
         try {
             $module = new ColissimoPickupPoint();
             $country = $deliveryModuleOptionEvent->getCountry();
