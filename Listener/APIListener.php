@@ -110,7 +110,7 @@ class APIListener implements EventSubscriberInterface
             ->setLastName('')
             ->setIsDefault(0)
             ->setLabel('')
-            ->setAdditionalData([])
+            ->setAdditionalData(['network' => $response->reseau])
         ;
 
         return $pickupLocationAddress;
