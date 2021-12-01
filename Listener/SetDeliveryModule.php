@@ -67,6 +67,7 @@ class SetDeliveryModule implements EventSubscriberInterface
 
     private function callWebServiceFindRelayPointByIdFromRequest(Request $request)
     {
+        $codeReseau = null;
         if ($request->get('colissimo_pickup_point_code')) {
             $relayInfos = explode(':', $request->get('colissimo_pickup_point_code'));
             $relayCode = $relayInfos[0];
@@ -78,6 +79,9 @@ class SetDeliveryModule implements EventSubscriberInterface
             $relayCode = $relayInfos['id'];
             $relayType = $relayInfos['type'] ?: null;
             $relayCountryCode = $relayInfos['countryCode'] ?: null;
+            if (array_key_exists('additionalData', $relayInfos) && array_key_exists('network', $relayInfos['additionalData'])){
+                $codeReseau = $relayInfos['additionalData']['network'];
+            }
         }
 
         if (!empty($relayCode)) {
@@ -91,11 +95,11 @@ class SetDeliveryModule implements EventSubscriberInterface
 
             // An argument "Code réseau" is now required in addition to the Relay Point Code to identify a relay point outside France.
             // This argument is optional for relay points inside France.
-            if ($relayType != null && $relayCountryCode != null) {
+            if ($codeReseau === null && $relayType != null && $relayCountryCode != null) {
                 $codeReseau = ColissimoCodeReseau::getCodeReseau($relayCountryCode, $relayType);
-                if ($codeReseau !== null) {
-                    $req->setReseau($codeReseau);
-                }
+            }
+            if ($codeReseau !== null) {
+                $req->setReseau($codeReseau);
             }
 
             return $req->exec();
