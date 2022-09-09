@@ -41,6 +41,7 @@ use Thelia\Model\AddressQuery;
 use ColissimoPickupPoint\Model\AddressColissimoPickupPointQuery;
 use ColissimoPickupPoint\Model\AddressColissimoPickupPoint;
 use ColissimoPickupPoint\Model\OrderAddressColissimoPickupPoint;
+use Thelia\Core\Security\SecurityContext;
 
 /**
  * Class SetDeliveryModule
@@ -51,8 +52,10 @@ class SetDeliveryModule implements EventSubscriberInterface
 {
     protected $request;
 
-    public function __construct(RequestStack $requestStack)
-    {
+    public function __construct(
+        RequestStack $requestStack,
+        private SecurityContext $securityContext,
+    ) {
         $this->request = $requestStack->getCurrentRequest();
     }
 
@@ -122,7 +125,7 @@ class SetDeliveryModule implements EventSubscriberInterface
             $response = $this->callWebServiceFindRelayPointByIdFromRequest($request);
 
             if ($response !== null) {
-                $customerName = AddressQuery::create()
+                $customer = AddressQuery::create()
                     ->findPk($event->getDeliveryAddress());
 
                 $address = AddressColissimoPickupPointQuery::create()
@@ -137,8 +140,12 @@ class SetDeliveryModule implements EventSubscriberInterface
 
                 $relayCountry = CountryQuery::create()->findOneByIsoalpha2($response->codePays);
 
-                if ($relayCountry == null) {
-                    $relayCountry = $customerName->getCountry();
+                if ($relayCountry == null && null !== $customer) {
+                    $relayCountry = $customer->getCountry();
+                }
+
+                if (null === $customer) {
+                    $customer = $this->securityContext->getCustomerUser();
                 }
 
                 $address
@@ -150,9 +157,9 @@ class SetDeliveryModule implements EventSubscriberInterface
                     ->setAddress3($response->adresse3)
                     ->setZipcode($response->codePostal)
                     ->setCity($response->localite)
-                    ->setFirstname($customerName->getFirstname())
-                    ->setLastname($customerName->getLastname())
-                    ->setTitleId($customerName->getTitleId())
+                    ->setFirstname($customer->getFirstname())
+                    ->setLastname($customer->getLastname())
+                    ->setTitleId($customer->getTitleId())
                     ->setCountryId($relayCountry->getId())
                     ->save()
                 ;
