@@ -77,8 +77,8 @@ class SetDeliveryModule implements EventSubscriberInterface
             // The request sent by OpenApi is different
             $relayInfos = $request->get('pickupAddress');
             $relayCode = $relayInfos['id'];
-            $relayType = $relayInfos['type'] ?: null;
-            $relayCountryCode = $relayInfos['countryCode'] ?: null;
+            $relayType = $relayInfos['type'] ?? null;
+            $relayCountryCode = $relayInfos['countryCode'] ?? null;
         }
 
         if (!empty($relayCode)) {
