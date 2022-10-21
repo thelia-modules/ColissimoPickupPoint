@@ -18,6 +18,7 @@ use Thelia\Core\Event\Delivery\PickupLocationEvent;
 use Thelia\Core\Event\TheliaEvents;
 use Thelia\Core\Translation\Translator;
 use Thelia\Model\CountryArea;
+use Thelia\Model\LangQuery;
 use Thelia\Model\PickupLocation;
 use Thelia\Model\PickupLocationAddress;
 use Thelia\Module\Exception\DeliveryException;
@@ -181,6 +182,7 @@ class APIListener implements EventSubscriberInterface
         }
 
         $isValid = true;
+        $locale = $this->requestStack->getCurrentRequest()->getSession()->getLang()->getLocale();
 
         try {
             $module = new ColissimoPickupPoint();
@@ -190,7 +192,7 @@ class APIListener implements EventSubscriberInterface
                 $country,
                 $deliveryModuleOptionEvent->getCart()->getWeight(),
                 $deliveryModuleOptionEvent->getCart()->getTaxedAmount($country),
-                $this->requestStack->getCurrentRequest()->getSession()->getLang()->getLocale()
+                $locale
             );
 
         } catch (\Exception $exception) {
@@ -205,7 +207,7 @@ class APIListener implements EventSubscriberInterface
         $deliveryModuleOption
             ->setCode('ColissimoPickupPoint')
             ->setValid($isValid)
-            ->setTitle('Colissimo Pickup Point')
+            ->setTitle($deliveryModuleOptionEvent->getModule()->setLocale($locale)->getTitle())
             ->setImage('')
             ->setMinimumDeliveryDate($minimumDeliveryDate)
             ->setMaximumDeliveryDate($maximumDeliveryDate)
