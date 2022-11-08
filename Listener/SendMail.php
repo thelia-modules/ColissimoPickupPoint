@@ -55,7 +55,7 @@ class SendMail implements EventSubscriberInterface
         $this->request = $requestStack->getCurrentRequest();
     }
 
-    public function updateStatus(OrderEvent $event, $mailer)
+    public function updateStatus(OrderEvent $event)
     {
         $order = $event->getOrder();
         $colissimoPickupPoint = new ColissimoPickupPoint();
