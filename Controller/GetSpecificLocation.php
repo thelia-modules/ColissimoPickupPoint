@@ -27,19 +27,25 @@ use ColissimoPickupPoint\ColissimoPickupPoint;
 use ColissimoPickupPoint\WebService\FindById;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Controller\Front\BaseFrontController;
 use Thelia\Core\HttpFoundation\Response;
 use Thelia\Core\Template\ParserInterface;
 use Thelia\Core\Template\TemplateDefinition;
 use Thelia\Model\ConfigQuery;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class SearchCityController
  * @package IciRelais\Controller
  * @author Thelia <info@thelia.net>
+ * @Route("/module/ColissimoPickupPoint/", name="specific_location_")
  */
 class GetSpecificLocation extends BaseFrontController
 {
+    /**
+     * @Route("{countryid}/{zipcode}/{city}/{address}", name="get_location", methods="GET")
+     */
     public function get($countryid, $zipcode, $city, $address="")
     {
         $content = $this->renderRaw(
@@ -56,6 +62,9 @@ class GetSpecificLocation extends BaseFrontController
         return $response;
     }
 
+    /**
+     * @Route("point/{point_id}", name="get_point_info")
+     */
     public function getPointInfo($point_id)
     {
         $req = new FindById();
@@ -74,20 +83,22 @@ class GetSpecificLocation extends BaseFrontController
         return $response;
     }
 
-    public function search()
+    /**
+     * @Route("points", name="search")
+     */
+    public function search(RequestStack $requestStack)
     {
-        $countryid = $this->getRequest()->query->get('countryid');
-        $zipcode = $this->getRequest()->query->get('zipcode');
-        $city = $this->getRequest()->query->get('city');
-        $addressId = $this->getRequest()->query->get('address');
+        $countryid = $requestStack->getCurrentRequest()->getQueryString('countryid');
+        $zipcode = $requestStack->getCurrentRequest()->getQueryString('zipcode');
+        $city = $requestStack->getCurrentRequest()->getQueryString('city');
+        $addressId = $requestStack->getCurrentRequest()->getQueryString('address');
 
         return $this->get($countryid, $zipcode, $city, $addressId);
     }
 
     /**
      * @param null $template
-     * @return ParserInterface instance parser
-     * @throws Exception
+     * @return object|null $parser
      */
     protected function getParser($template = null)
     {

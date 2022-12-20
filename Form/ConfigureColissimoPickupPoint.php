@@ -24,13 +24,11 @@
 namespace ColissimoPickupPoint\Form;
 
 use ColissimoPickupPoint\ColissimoPickupPoint;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Url;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
-use Thelia\Model\ConfigQuery;
 
 /**
  * Class ConfigureColissimoPickupPoint
@@ -57,9 +55,9 @@ class ConfigureColissimoPickupPoint extends BaseForm
      *   )
      *   ->add('age', 'integer');
      *
-     * @return null
+     * @return void
      */
-    protected function buildForm()
+    protected function buildForm(): void
     {
         $translator = Translator::getInstance();
         $this->formBuilder

@@ -26,7 +26,6 @@ namespace ColissimoPickupPoint\Form;
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use ColissimoPickupPoint\Model\ColissimoPickupPointFreeshippingQuery;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
@@ -51,30 +50,28 @@ class FreeShippingForm extends BaseForm
      *   )
      *   ->add('age', 'integer');
      *
-     * @return null
+     * @return void
      */
-    protected function buildForm()
+    protected function buildForm(): void
     {
         $this->formBuilder
             ->add(
                 'freeshipping',
                 CheckboxType::class,
                 [
-                    'label' =>  Translator::getInstance()->trans('Activate free shipping: ', [], ColissimoPickupPoint::DOMAIN)
+                    'label' => Translator::getInstance()->trans('Activate free shipping: ', [], ColissimoPickupPoint::DOMAIN)
                 ]
             )
             ->add(
                 'freeshipping_from',
                 NumberType::class,
                 [
-                    'required'  => false,
-                    'label'     => Translator::getInstance()->trans("Free shipping from: ", [], ColissimoPickupPoint::DOMAIN),
-                    'data'      => ColissimoPickupPointFreeshippingQuery::create()->findOneById(1)->getFreeshippingFrom(),
-                    'scale'     => 2,
+                    'required' => false,
+                    'label' => Translator::getInstance()->trans("Free shipping from: ", [], ColissimoPickupPoint::DOMAIN),
+                    'data' => ColissimoPickupPointFreeshippingQuery::create()->findOneById(1)->getFreeshippingFrom(),
+                    'scale' => 2,
                 ]
-            )
-
-        ;
+            );
     }
 
     /**

@@ -129,7 +129,7 @@
                                     {loop name="order.notsent.colissimo.pickup.point" type="order.notsent.colissimo.pickup.point"}
                                         <tr>
                                             <td>
-                                                <label for="{$label_attr.for}">
+                                                <label for="{$label_attr.for|default:null}">
                                                     {form_field form=$form field="order_"|cat:$ID}
                                                         <a href="{url path='/admin/order/update/%order_id' order_id={$ID}}">{$label}</a>
                                                     {/form_field}

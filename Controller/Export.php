@@ -30,24 +30,30 @@ use ColissimoPickupPoint\Format\CSVLine;
 use ColissimoPickupPoint\Model\OrderAddressColissimoPickupPointQuery;
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Event\TheliaEvents;
 use Thelia\Core\HttpFoundation\Response;
+use Thelia\Core\HttpFoundation\Session\Session;
 use Thelia\Model\Base\CountryQuery;
 use Thelia\Model\ConfigQuery;
 use Thelia\Model\CustomerTitleI18nQuery;
+use Thelia\Model\Order;
 use Thelia\Model\OrderAddressQuery;
+use Thelia\Model\OrderProduct;
 use Thelia\Model\OrderQuery;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Model\OrderStatus;
 use Thelia\Model\OrderStatusQuery;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class Export
  * @package ColissimoPickupPoint\Controller
  * @author Thelia <info@thelia.net>
+ * @Route("/admin/module/ColissimoPickupPoint/export", name="colissimo_pickup_point_export_")
  */
 class Export extends BaseAdminController
 {
@@ -56,7 +62,10 @@ class Export extends BaseAdminController
     const DEFAULT_PHONE = '0100000000';
     const DEFAULT_CELLPHONE = '0600000000';
 
-    public function export()
+    /**
+     * @Route("", name="export_coliship_file", methods="POST")
+     */
+    public function export(Session $session)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('ColissimoPickupPoint'), AccessManager::UPDATE)) {
             return $response;
@@ -65,14 +74,15 @@ class Export extends BaseAdminController
         $csv = new CSV(self::CSV_SEPARATOR);
 
         try {
-            $form  = $this->createForm(ExportOrder::getName());
+            $form = $this->createForm(ExportOrder::getName());
             $vform = $this->validateForm($form);
 
             // Check status_id
             $status_id = $vform->get('new_status_id')->getData();
-            if (!preg_match('#^nochange|processing|sent$#',$status_id)) {
+            if (!preg_match('#^nochange|processing|sent$#', $status_id)) {
                 throw new Exception('Bad value for new_status_id field');
             }
+
 
             $status = OrderStatusQuery::create()
                 ->filterByCode(
@@ -84,8 +94,7 @@ class Export extends BaseAdminController
                     Criteria::IN
                 )
                 ->find()
-                ->toArray('code')
-            ;
+                ->toArray('code');
 
             $query = OrderQuery::create()
                 ->filterByDeliveryModuleId(ColissimoPickupPoint::getModCode())
@@ -98,9 +107,9 @@ class Export extends BaseAdminController
                 ->find();
 
             // check form && exec csv
-            /** @var \Thelia\Model\Order $order */
+            /** @var Order $order */
             foreach ($query as $order) {
-                $value = $vform->get('order_'.$order->getId())->getData();
+                $value = $vform->get('order_' . $order->getId())->getData();
 
                 // If checkbox is checked
                 if ($value) {
@@ -135,9 +144,7 @@ class Export extends BaseAdminController
                     $title = CustomerTitleI18nQuery::create()
                         ->filterById($customer->getTitleId())
                         ->findOneByLocale(
-                            $this->getSession()
-                                ->getAdminEditionLang()
-                                    ->getLocale()
+                            $session->getAdminLang()->getLocale()
                         );
 
                     /**
@@ -158,7 +165,7 @@ class Export extends BaseAdminController
                     /**
                      * Cellphone
                      */
-                     $cellphone = $customer->getDefaultAddress()->getCellphone();
+                    $cellphone = $customer->getDefaultAddress()->getCellphone();
 
                     if (empty($cellphone)) {
                         $cellphone = self::DEFAULT_CELLPHONE;
@@ -168,13 +175,13 @@ class Export extends BaseAdminController
                      * Compute package weight
                      */
                     $weight = 0;
-                    if ($vform->get('order_weight_'.$order->getId())->getData() == 0) {
-                        /** @var \Thelia\Model\OrderProduct $product */
+                    if ($vform->get('order_weight_' . $order->getId())->getData() == 0) {
+                        /** @var OrderProduct $product */
                         foreach ($order->getOrderProducts() as $product) {
-                            $weight+=(double) $product->getWeight() * $product->getQuantity();
+                            $weight += (double)$product->getWeight() * $product->getQuantity();
                         }
                     } else {
-                        $weight = $vform->get('order_weight_'.$order->getId())->getData();
+                        $weight = $vform->get('order_weight_' . $order->getId())->getData();
                     }
 
                     /**
@@ -222,21 +229,20 @@ class Export extends BaseAdminController
                     if ($status_id === 'processing') {
                         $event = new OrderEvent($order);
                         $event->setStatus($status[OrderStatus::CODE_PROCESSING]['Id']);
-                        $this->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
+                        $this->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
                     } elseif ($status_id === 'sent') {
                         $event = new OrderEvent($order);
                         $event->setStatus($status[OrderStatus::CODE_SENT]['Id']);
-                        $this->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
+                        $this->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
                     }
 
                 }
             }
-
         } catch (\Exception $e) {
-            return Response::create($e->getMessage(),500);
+            return new Response($e->getMessage(), 500);
         }
 
-        return Response::create(
+        return new Response(
             utf8_decode($csv->parse()),
             200,
             array(

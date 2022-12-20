@@ -28,22 +28,29 @@ use ColissimoPickupPoint\Model\ColissimoPickupPointAreaFreeshipping;
 use ColissimoPickupPoint\Model\ColissimoPickupPointAreaFreeshippingQuery;
 use ColissimoPickupPoint\Model\ColissimoPickupPointFreeshipping;
 use ColissimoPickupPoint\Model\ColissimoPickupPointFreeshippingQuery;
+use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\HttpFoundation\Response;
-
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Model\AreaQuery;
+use Symfony\Component\Routing\Annotation\Route;
+use Thelia\Module\Exception\DeliveryException;
 
+/**
+ * @Route("/admin/module/ColissimoPickupPoint/", name="colissimo_pickup_point_freeshiping_")
+ */
 class FreeShipping extends BaseAdminController
 {
     /**
      * Toggle on or off free shipping for all areas without minimum cart amount, or set the minimum cart amount to reach for all areas to get free shipping
      *
+     * @Route("freeshipping", name="toggle_freeshing", methods="POST")
      * @return mixed|JsonResponse|Response|null
      */
-    public function toggleFreeShippingActivation()
+    public function toggleFreeShippingActivation(): mixed
     {
         if (null !== $response = $this
                 ->checkAuth(array(AdminResources::MODULE), array('ColissimoPickupPoint'), AccessManager::UPDATE)) {
@@ -79,27 +86,26 @@ class FreeShipping extends BaseAdminController
                     'price_error' => null
                 )
             );
-        } catch (\Exception $e) {
-            $response = JsonResponse::create(array('error' => $e->getMessage()), 500);
+        } catch (Exception $e) {
+            $response = new JsonResponse(array('error' => $e->getMessage()), 500);
         }
 
         return $response;
     }
 
     /**
+     * @Route("area_freeshipping", name="area_freeshing", methods="POST")
      * @return mixed|null|\Symfony\Component\HttpFoundation\Response
      */
-    public function setAreaFreeShipping()
+    public function setAreaFreeShipping(RequestStack $requestStack): mixed
     {
         if (null !== $response = $this
                 ->checkAuth(array(AdminResources::MODULE), array('ColissimoPickupPoint'), AccessManager::UPDATE)) {
             return $response;
         }
 
-        $data = $this->getRequest()->request;
-
         try {
-            $data = $this->getRequest()->request;
+            $data = $requestStack->getCurrentRequest()->request;
 
             $colissimo_pickup_area_id = $data->get('area-id');
             $cartAmount = $data->get('cart-amount');
@@ -108,8 +114,8 @@ class FreeShipping extends BaseAdminController
                 $cartAmount = null;
             }
 
-            $aeraQuery = AreaQuery::create()->findOneById($colissimo_pickup_area_id);
-            if (null === $aeraQuery) {
+            $areaQuery = AreaQuery::create()->findOneById($colissimo_pickup_area_id);
+            if (null === $areaQuery) {
                 return null;
             }
 
@@ -126,13 +132,14 @@ class FreeShipping extends BaseAdminController
                     ->save();
             }
 
-            $cartAmountQuery = ColissimoPickupPointAreaFreeshippingQuery::create()
+            ColissimoPickupPointAreaFreeshippingQuery::create()
                 ->filterByAreaId($colissimo_pickup_area_id)
                 ->findOneOrCreate()
                 ->setCartAmount($cartAmount)
                 ->save();
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            throw new DeliveryException($e->getMessage()); //todo make a better catch
         }
 
         return $this->generateRedirectFromRoute(

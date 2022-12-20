@@ -6,6 +6,8 @@ use ColissimoPickupPoint\Form\ImportForm;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Propel;
 use ColissimoPickupPoint\ColissimoPickupPoint;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
@@ -15,15 +17,21 @@ use Thelia\Model\Map\OrderTableMap;
 use Thelia\Model\OrderQuery;
 use Thelia\Model\OrderStatusQuery;
 use Thelia\Tools\URL;
+use Symfony\Component\Routing\Annotation\Route;
+
 
 /**
  * Class ImportController
  * @package ColissimoPickupPoint\Controller
  * @author Etienne Perriere - OpenStudio <eperriere@openstudio.fr>
+ * @Route("/admin/module/ColissimoPickupPoint/import", name="colissimo_pickup_point_import_")
  */
 class ImportController extends BaseAdminController
 {
-    public function importAction()
+    /**
+     * @Route("", name="import_coliship_file", methods="GET")
+     */
+    public function importAction(RequestStack $requestStack, EventDispatcherInterface $dispatcher)
     {
         $i = 0;
 
@@ -60,14 +68,14 @@ class ImportController extends BaseAdminController
 
                 // Save delivery ref if there is one
                 if (!empty($deliveryRef)) {
-                    $this->importDeliveryRef($deliveryRef, $orderRef, $i);
+                    $this->importDeliveryRef($deliveryRef, $orderRef, $i, $dispatcher);
                 }
             }
 
             $con->commit();
 
             // Get number of affected rows to display
-            $this->getSession()->getFlashBag()->add(
+            $requestStack->getSession()->getFlashBag()->add(
                 'import-result',
                 Translator::getInstance()->trans(
                     'Operation successful. %i orders affected.',
@@ -101,7 +109,7 @@ class ImportController extends BaseAdminController
      * @param int $i
      * @throws PropelException
      */
-    public function importDeliveryRef($deliveryRef, $orderRef, &$i)
+    public function importDeliveryRef($deliveryRef, $orderRef, &$i, $dispatcher)
     {
         // Check if the order exists
         if (null !== $order = OrderQuery::create()->findOneByRef($orderRef)) {
@@ -110,7 +118,7 @@ class ImportController extends BaseAdminController
             // Check if delivery refs are different
             if ($order->getDeliveryRef() != $deliveryRef) {
                 $event->setDeliveryRef($deliveryRef);
-                $this->getDispatcher()->dispatch($event, TheliaEvents::ORDER_UPDATE_DELIVERY_REF);
+                $dispatcher->dispatch($event, TheliaEvents::ORDER_UPDATE_DELIVERY_REF);
 
                 $sentStatusId = OrderStatusQuery::create()
                     ->filterByCode('sent')
@@ -119,8 +127,8 @@ class ImportController extends BaseAdminController
 
                 // Set 'sent' order status if not already sent
                 if ($sentStatusId != null && $order->getStatusId() != $sentStatusId) {
-                    $event->setStatus($sentStatusId);
-                    $this->getDispatcher()->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
+                    $event->setStatus((int) $sentStatusId);
+                    $dispatcher->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
                 }
 
                 $i++;
