@@ -116,16 +116,17 @@ class SendMail implements EventSubscriberInterface
                 $message
                     ->setLocale($order->getLang()->getLocale());
 
-                $instance = \Swift_Message::newInstance()
-                    ->addTo($customer->getEmail(), $customer->getFirstname() . ' ' . $customer->getLastname())
-                    ->addFrom($contact_email, ConfigQuery::read('store_name'))
-                ;
+                $email = $this->mailer->createEmailMessage(
+                    'order_notification',
+                    [ConfigQuery::getStoreEmail() => ConfigQuery::getStoreName()],
+                    [$customer->getEmail() => $customer->getFirstname() . " " . $customer->getLastname()],
+                    [
+                        'order_id' => $event->getOrder()->getId(),
+                        'order_ref' => $event->getOrder()->getRef(),
+                    ]
+                );
 
-                // Build subject and body
-
-                $message->buildMessage($this->parser, $instance);
-
-                $this->mailer->send($instance);
+                $this->mailer->send($email);
             }
         }
     }

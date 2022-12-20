@@ -26,6 +26,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Thelia\Form\BaseForm;
 use Thelia\Model\Base\OrderQuery;
 use Thelia\Core\Translation\Translator;
@@ -106,7 +107,7 @@ class ExportOrder extends BaseForm
                 )
                 ->add(
                     'order_weight_' . $order->getId(),
-                    'number'
+                    NumberType::class
                 )
             ;
         }
