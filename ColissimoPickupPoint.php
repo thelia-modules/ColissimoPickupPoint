@@ -58,7 +58,8 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
 
     const COLISSIMO_USERNAME = 'colissimo_pickup_point_username';
 
-    const CONFIRMATION_MESSAGE_NAME = 'mail_colissimo_pickup_point';
+    // The shipping confirmation message identifier
+    const CONFIRMATION_MESSAGE_NAME = 'order_confirmation_colissimo_pickup_point';
 
     const COLISSIMO_PASSWORD = 'colissimo_pickup_point_password';
 

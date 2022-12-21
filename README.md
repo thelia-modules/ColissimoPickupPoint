@@ -14,7 +14,7 @@ Adds a delivery system for Colissimo pickup point delivery, with or without sign
 Add it in your main thelia composer.json file
 
 ```
-composer require thelia/colissimo-pickup-point-module:~1.0.0
+composer require thelia/colissimo-pickup-point-module:~2.0.0
 ```
 
 ## Usage
