@@ -116,7 +116,10 @@ class APIListener implements EventSubscriberInterface
             ->setLastName('')
             ->setIsDefault(0)
             ->setLabel('')
-            ->setAdditionalData([])
+            ->setAdditionalData([
+                'pickupPointType' => $response->typeDePoint,
+                'pickupPointNetwork' => $response->reseau
+            ])
         ;
 
         return $pickupLocationAddress;

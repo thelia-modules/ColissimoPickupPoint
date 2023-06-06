@@ -77,7 +77,8 @@ class SetDeliveryModule implements EventSubscriberInterface
             // The request sent by OpenApi is different
             $relayInfos = $request->get('pickupAddress');
             $relayCode = $relayInfos['id'];
-            $relayType = $relayInfos['type'] ?? null;
+            $relayType = isset($relayInfos['additionalData']['pickupPointType']) ? $relayInfos['additionalData']['pickupPointType'] : null;
+            $codeReseau = isset($relayInfos['additionalData']['pickupPointNetwork']) ? $relayInfos['additionalData']['pickupPointNetwork'] : null;
             $relayCountryCode = $relayInfos['countryCode'] ?? null;
         }
 
@@ -92,8 +93,10 @@ class SetDeliveryModule implements EventSubscriberInterface
 
             // An argument "Code réseau" is now required in addition to the Relay Point Code to identify a relay point outside France.
             // This argument is optional for relay points inside France.
-            if ($relayType != null && $relayCountryCode != null) {
-                $codeReseau = ColissimoCodeReseau::getCodeReseau($relayCountryCode, $relayType);
+            if ($relayType !== null && $relayCountryCode !== null) {
+                if ($codeReseau === null) {
+                    $codeReseau = ColissimoCodeReseau::getCodeReseau($relayCountryCode, $relayType);
+                }
                 if ($codeReseau !== null) {
                     $req->setReseau($codeReseau);
                 }
