@@ -235,12 +235,15 @@
                                                 <input type="text" id="{$label_attr.for}" name="{$name}" class="form-control" value="{$value}" title="{$label}" >
                                             </div>
                                         {/form_field}
-                                        {form_field form=$form field='colissimo_pickup_point_password'}
-                                            <div class="form-group {if $error}has-error{/if}">
+                                        <div class="form-group">
+                                            {form_field field="colissimo_pickup_point_password"}
                                                 <label for="{$label_attr.for}" class="control-label">{$label}{if $required} <span class="required">*</span>{/if} : </label>
-                                                <input type="text" id="{$label_attr.for}" name="{$name}" class="form-control" value="{$value}" title="{$label}">
-                                            </div>
-                                        {/form_field}
+                                                <input type="password" id="mdp" name="{$name}" class="form-control" value="{$data}" aria-describedby="pwdHelpBlock">
+                                                <button type="button" class="eye btn btn-primary btn-responsive" style="color:#FFF;background-color:#f6993c" onclick="togglePwd('mdp');">
+                                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                                </button>
+                                            {/form_field}
+                                        </div>
                                         {form_field form=$form field='colissimo_pickup_point_google_map_key'}
                                             <div class="form-group {if $error}has-error{/if}">
                                                 <label for="{$label_attr.for}" class="control-label">{$label}{if $required} <span class="required">*</span>{/if} : </label>
@@ -472,3 +475,11 @@
     </script>
 
 {/elseloop}
+
+<script>
+    function togglePwd(id)
+    {
+        var x = document.getElementById(id);
+        x.type = (x.type === "password")? "text" : "password";
+    }
+</script>
