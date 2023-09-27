@@ -24,6 +24,7 @@
 namespace ColissimoPickupPoint\Form;
 
 use ColissimoPickupPoint\ColissimoPickupPoint;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Url;
@@ -73,7 +74,7 @@ class ConfigureColissimoPickupPoint extends BaseForm
             )
             ->add(
                 ColissimoPickupPoint::COLISSIMO_PASSWORD,
-                TextType::class,
+                PasswordType::class,
                 [
                     'constraints' => [new NotBlank()],
                     'data'        => ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_PASSWORD),
