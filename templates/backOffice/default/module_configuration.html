@@ -8,7 +8,7 @@
     <!-- Errors -->
     {loop name="checkrights.colissimo.pickup.point" type="colissimo.pickup.point.check.rights"}
         <div class="alert alert-danger">
-            <p>{$ERRMES} {$ERRFILE} | {intl l="Please change the access rights" d='colissimo.pickup.point.bo.default'}.</p>
+            <p>{$ERRMES} {$ERRFILE} | {intl l="Please change the access rights" d='colissimopickuppoint.bo.default'}.</p>
         </div>
     {/loop}
 </div>
@@ -45,22 +45,23 @@
             <div class="col-md-12">
 
                 <ul id="tabbed-menu" class="nav nav-tabs">
-                    <li class="{if $tab eq "export"}active{/if}"><a data-toggle="tab" href="#export">{intl l="Export Coliship file" d='colissimo.pickup.point.bo.default'}</a> </li>
-                    <li class="{if $tab eq "import"}active{/if}"><a data-toggle="tab" href="#import">{intl l="Import Coliship file" d='colissimo.pickup.point.bo.default'}</a> </li>
-                    <li class="{if $tab eq "prices_slices_tab}"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab">{intl l="Price slices (Pickup Point)" d='colissimo.pickup.point.bo.default' mode={$TITLE|default:null}}</a></li>
-                    <li class="{if $tab eq "configure"}active{/if}"><a data-toggle="tab" href="#configure">{intl l="Advanced configuration" d='colissimo.pickup.point.bo.default'}</a></li>
+                    <li class="{if $tab eq "export"}active{/if}"><a data-toggle="tab" href="#export">{intl l="Export Coliship file" d='colissimopickuppoint.bo.default'}</a> </li>
+                    <li class="{if $tab eq "import"}active{/if}"><a data-toggle="tab" href="#import">{intl l="Import Coliship file" d='colissimopickuppoint.bo.default'}</a> </li>
+                    <li class="{if $tab eq "prices_slices_tab}"}active{/if}"><a data-toggle="tab" href="#prices_slices_tab">{intl l="Price slices (Pickup Point)" d='colissimopickuppoint.bo.default' mode={$TITLE|default:null}}</a></li>
+                    <li class="{if $tab eq "configure"}active{/if}"><a data-toggle="tab" href="#configure">{intl l="Advanced configuration" d='colissimopickuppoint.bo.default'}</a></li>
+                    <li class="{if $tab eq "tax_rule"}active{/if}"><a data-toggle="tab" href="#tax_rule">{intl l="Tax Rule" d='colissimopickuppoint.bo.default'}</a> </li>
                 </ul>
 
                 <div class="tab-content">
                     <div id="export" class="tab-pane {if $tab eq "export"}active{/if} form-container">
                         <div class="panel panel-default">
                             <div class="panel-heading clearfix">
-                                {intl l="operations" d='colissimo.pickup.point.bo.default'}
+                                {intl l="operations" d='colissimopickuppoint.bo.default'}
                             </div>
                             <div class="panel-body">
-                                <button id="check-all-but" title="{intl l="Check all" d='colissimo.pickup.point.bo.default'}" class="form-submit-button btn btn-sm btn-default">{intl l="Check all" d='colissimo.pickup.point.bo.default'}</button>
-                                <button id="uncheck-all-but" title="{intl l="Uncheck all" d='colissimo.pickup.point.bo.default'}" class="form-submit-button btn btn-sm btn-default">{intl l="Uncheck all" d='colissimo.pickup.point.bo.default'}</button>
-                                <button id="reverse-all-but" title="{intl l="Reverse selection" d='colissimo.pickup.point.bo.default'}" class="form-submit-button btn btn-sm btn-default">{intl l="Reverse selection" d='colissimo.pickup.point.bo.default'}</button>
+                                <button id="check-all-but" title="{intl l="Check all" d='colissimopickuppoint.bo.default'}" class="form-submit-button btn btn-sm btn-default">{intl l="Check all" d='colissimopickuppoint.bo.default'}</button>
+                                <button id="uncheck-all-but" title="{intl l="Uncheck all" d='colissimopickuppoint.bo.default'}" class="form-submit-button btn btn-sm btn-default">{intl l="Uncheck all" d='colissimopickuppoint.bo.default'}</button>
+                                <button id="reverse-all-but" title="{intl l="Reverse selection" d='colissimopickuppoint.bo.default'}" class="form-submit-button btn btn-sm btn-default">{intl l="Reverse selection" d='colissimopickuppoint.bo.default'}</button>
                             </div>
                         </div>
                         {form name="colissimopickuppoint_export_order_form"}
@@ -68,7 +69,7 @@
                                 {form_hidden_fields form=$form}
                                 <div class="panel panel-default">
                                     <div class="panel-heading clearfix">
-                                        {intl l="Change orders status after export" d='colissimo.pickup.point.bo.default'}
+                                        {intl l="Change orders status after export" d='colissimopickuppoint.bo.default'}
                                     </div>
                                     <div class="panel-body">
                                         {form_field form=$form field="new_status_id"}
@@ -76,7 +77,7 @@
 
                                                 <tr>
                                                     <td>
-                                                        <label for="nochange">{intl l="Do not change" d='colissimo.pickup.point.bo.default'}</label>&nbsp;
+                                                        <label for="nochange">{intl l="Do not change" d='colissimopickuppoint.bo.default'}</label>&nbsp;
                                                     </td>
                                                     <td>
                                                         <input type="radio"  id="nochange" name="{$name}" value="nochange" {if $data eq "nochange"}checked{/if} />
@@ -84,7 +85,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <label for="processing">{intl l="Processing" d='colissimo.pickup.point.bo.default'}</label>&nbsp;
+                                                        <label for="processing">{intl l="Processing" d='colissimopickuppoint.bo.default'}</label>&nbsp;
                                                     </td>
                                                     <td>
                                                         <input type="radio"  id="processing" name="{$name}" value="processing" {if $data eq "processing"}checked{/if} />
@@ -92,7 +93,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <label for="sent">{intl l="Sent" d='colissimo.pickup.point.bo.default'}*</label>&nbsp;
+                                                        <label for="sent">{intl l="Sent" d='colissimopickuppoint.bo.default'}*</label>&nbsp;
                                                     </td>
                                                     <td>
                                                         <input type="radio"  id="sent" name="{$name}" value="sent" {if $data eq "sent"}checked{/if} />
@@ -100,28 +101,28 @@
                                                 </tr>
                                             </table>
                                         {/form_field}
-                                        <span class="p">{intl l="*If you choose this option, the exported orders would not be available on this page anymore" d='colissimo.pickup.point.bo.default'}</span>
+                                        <span class="p">{intl l="*If you choose this option, the exported orders would not be available on this page anymore" d='colissimopickuppoint.bo.default'}</span>
                                     </div>
                                 </div>
                                 <table class="table table-striped table-condensed">
                                     <thead>
                                     <th class="object-title">
-                                        {intl l="REF" d='colissimo.pickup.point.bo.default'}
+                                        {intl l="REF" d='colissimopickuppoint.bo.default'}
                                     </th>
                                     <th class="object-title">
                                         {intl l="Customer"}
                                     </th>
                                     <th class="object-title">
-                                        {intl l="Date" d='colissimo.pickup.point.bo.default'}
+                                        {intl l="Date" d='colissimopickuppoint.bo.default'}
                                     </th>
                                     <th class="object-title">
-                                        {intl l="Total taxed amount" d='colissimo.pickup.point.bo.default'}
+                                        {intl l="Total taxed amount" d='colissimopickuppoint.bo.default'}
                                     </th>
                                     <th class="object-title">
-                                        {intl l="Package weight" d='colissimo.pickup.point.bo.default'}
+                                        {intl l="Package weight" d='colissimopickuppoint.bo.default'}
                                     </th>
                                     <th class="object-title">
-                                        {intl l="Export" d='colissimo.pickup.point.bo.default'}
+                                        {intl l="Export" d='colissimopickuppoint.bo.default'}
                                     </th>
                                     </thead>
 
@@ -140,7 +141,7 @@
                                                     <a href="{url path='/admin/customer/update?customer_id=%customer_id' customer_id={$ID}}">{$FIRSTNAME} {$LASTNAME}</a>
                                                 {/loop}
                                                 {elseloop rel='order-customer'}
-                                                    <a href="{url path='/admin/customer/update?customer_id=%customer_id' customer_id={$CUSTOMER}}">{intl l='Unknown customer' d='colissimo.pickup.point.bo.default'}</a>
+                                                    <a href="{url path='/admin/customer/update?customer_id=%customer_id' customer_id={$CUSTOMER}}">{intl l='Unknown customer' d='colissimopickuppoint.bo.default'}</a>
                                                 {/elseloop}
                                             </td>
                                             <td>
@@ -163,7 +164,7 @@
                                     {/loop}
                                     </tbody>
                                 </table>
-                                <button type="submit" name="export_colissimo_pickup_point_form" value="stay" class="form-submit-button btn btn-sm btn-default" title="{intl l='Export' d='colissimo.pickup.point.bo.default'}">{intl l='Export' d='colissimo.pickup.bo.default'}</button>
+                                <button type="submit" name="export_colissimo_pickup_point_form" value="stay" class="form-submit-button btn btn-sm btn-default" title="{intl l='Export' d='colissimopickuppoint.bo.default'}">{intl l='Export' d='colissimo.pickup.bo.default'}</button>
                             </form>
                         {/form}
                     </div>
@@ -173,7 +174,7 @@
 
                         <div class="panel panel-default">
                             <div class="panel-heading clearfix">
-                                {intl l="The file has to be a CSV with 2 columns. The first contains the delivery reference, the second the order reference." d='colissimo.pickup.point.bo.default'}
+                                {intl l="The file has to be a CSV with 2 columns. The first contains the delivery reference, the second the order reference." d='colissimopickuppoint.bo.default'}
                             </div>
 
                             <div class="panel-body">
@@ -203,7 +204,7 @@
                                             </div>
                                         {/form_field}
 
-                                        <button type="submit" class="btn btn-primary">{intl d='colissimo.pickup.point.bo.default' l='Upload'}</button>
+                                        <button type="submit" class="btn btn-primary">{intl d='colissimopickuppoint.bo.default' l='Upload'}</button>
                                     </form>
                                 {/form}
                             </div>
@@ -258,37 +259,37 @@
                         </div>
                     </div>
 
-                        <div id="prices_slices_tab" class="tab-pane {if $tab eq "prices_slices_tab" }active{/if} form-container">
-                            {if null !== $smarty.get.price_error|default:null}
-                                <div class="alert alert-danger" role="alert">{$smarty.get.price_error}</div>
-                            {/if}
-                            <br/>
+                    <div id="prices_slices_tab" class="tab-pane {if $tab eq "prices_slices_tab" }active{/if} form-container">
+                        {if null !== $smarty.get.price_error|default:null}
+                            <div class="alert alert-danger" role="alert">{$smarty.get.price_error}</div>
+                        {/if}
+                        <br/>
 
-                            <div class="row">
-                                <!-- checkbox free shipping -->
-                                {assign var="isColissimoPickupPointFreeShipping" value=0}
-                                {form  name="colissimopickuppoint_freeshipping_form"}
+                        <div class="row">
+                            <!-- checkbox free shipping -->
+                            {assign var="isColissimoPickupPointFreeShipping" value=0}
+                            {form  name="colissimopickuppoint_freeshipping_form"}
                                 <form action='{url path="/admin/module/ColissimoPickupPoint/freeshipping"}' method="post" id="freeshippingform">
                                     <div class="col-md-4">
                                         {form_hidden_fields form=$form}
 
                                         {form_field form=$form field="freeshipping"}
-                                        <label>
-                                            {intl l="Activate total free shipping " d="colissimo.pickup.point.bo.default"}
-                                        </label>
-                                        <div class="switch-small freeshipping-activation-ColissimoPickupPoint" data-id="1" data-on="success" data-off="danger" data-on-label="<i class='glyphicon glyphicon-ok-circle'></i>" data-off-label="<i class='glyphicon glyphicon-remove-circle'></i>">
+                                            <label>
+                                                {intl l="Activate total free shipping " d="colissimopickuppoint.bo.default"}
+                                            </label>
+
+                                            <div class="switch-small freeshipping-activation-ColissimoPickupPoint" data-id="1" data-on="success" data-off="danger" data-on-label="<i class='glyphicon glyphicon-ok-circle'></i>" data-off-label="<i class='glyphicon glyphicon-remove-circle'></i>">
                                             {loop type="colissimo.pickup.point.freeshipping" name="freeshipping_colissimo_pickup_point"}
-                                            <input type="checkbox" name="{$name}" value="true" {if $FREESHIPPING_ACTIVE}checked{assign var="isColissimoPickupPointFreeShipping" value=1}{/if} />
+                                                <input type="checkbox" name="{$name}" value="true" {if $FREESHIPPING_ACTIVE}checked{assign var="isColissimoPickupPointFreeShipping" value=1}{/if} />
                                             {/loop}
-                                        </div>
+                                            </div>
                                         {/form_field}
                                     </div>
-
                                     <div class="col-md-6" id="freeshipping-from">
                                         <div class="input-group">
                                             {form_field form=$form field="freeshipping_from"}
                                                 {loop type="colissimo.pickup.point.freeshipping" name="freeshipping_colissimo_pickup_point"}
-                                                    <span class="input-group-addon {if $FREESHIPPING_FROM}alert-success{/if}">{intl l="Or activate free shipping from (€) :" d="colissimo.pickup.point.bo.default"}</span>
+                                                    <span class="input-group-addon {if $FREESHIPPING_FROM}alert-success{/if}">{intl l="Or activate free shipping from (€) :" d="colissimopickuppoint.bo.default"}</span>
                                                     <input type="number" name="{$name}"  class="form-control" value="{$value}" step="0.01">
                                                 {/loop}
                                             {/form_field}
@@ -298,139 +299,155 @@
                                         </div>
                                     </div>
                                 </form>
-                                {/form}
-                            </div>
+                            {/form}
+                        </div>
 
-
-                            <br/>
+                        <br/>
 
                             <div class="alert alert-info">
-                                {intl l="You can create price slices by specifying a maximum cart weight and/or a maximum cart price." d='colissimo.pickup.point.bo.default'}
-                                {intl l="The slices are ordered by maximum cart weight then by maximum cart price." d='colissimo.pickup.point.bo.default'}
-                                {intl l="If a cart matches multiple slices, it will take the last slice following that order." d='colissimo.pickup.point.bo.default'}
-                                {intl l="If you don't specify a cart weight in a slice, it will have priority over the slices with weight." d='colissimo.pickup.point.bo.default'}
-                                {intl l="If you don't specify a cart price in a slice, it will have priority over the other slices with the same weight." d='colissimo.pickup.point.bo.default'}
-                                {intl l="If you specify both, the cart will require to have a lower weight AND a lower price in order to match the slice." d='colissimo.pickup.point.bo.default'}
+                                {intl l="You can create price slices by specifying a maximum cart weight and/or a maximum cart price." d='colissimopickuppoint.bo.default'}
+                                {intl l="The slices are ordered by maximum cart weight then by maximum cart price." d='colissimopickuppoint.bo.default'}
+                                {intl l="If a cart matches multiple slices, it will take the last slice following that order." d='colissimopickuppoint.bo.default'}
+                                {intl l="If you don't specify a cart weight in a slice, it will have priority over the slices with weight." d='colissimopickuppoint.bo.default'}
+                                {intl l="If you don't specify a cart price in a slice, it will have priority over the other slices with the same weight." d='colissimopickuppoint.bo.default'}
+                                {intl l="If you specify both, the cart will require to have a lower weight AND a lower price in order to match the slice." d='colissimopickuppoint.bo.default'}
                             </div>
 
-                            <div class="slices" class="form-container">
+                        <div class="slices" class="form-container">
 
-                                {loop type="module" name="module-id-loop" code="ColissimoPickupPoint"}
-                                    {assign var="module_id" value=$ID}
-                                {/loop}
-                                {loop type="area" name="area_loop" module_id=$module_id backend_context=true}
-                                {$area_id=$ID}
-                                    <div class="col-md-12">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-condensed table-left-aligned">
-                                                <thead>
-                                                <tr>
-                                                    <th>
-                                                        <label class="clearfix">
-                                                            <small>{intl d='colissimo.pickup.point.bo.default' l="Area : "}</small> {$NAME}
-                                                        </label>
+                            {loop type="module" name="module-id-loop" code="ColissimoPickupPoint"}
+                            {assign var="module_id" value=$ID}
+                            {/loop}
+                            {loop type="area" name="area_loop" module_id=$module_id backend_context=true}
+                            {$area_id=$ID}
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-condensed table-left-aligned">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    <label class="clearfix">
+                                                        <small>{intl d='colissimopickuppoint.bo.default' l="Area : "}</small> {$NAME}
+                                                    </label>
+                                                </th>
+                                                <th width="40%">
+                                                    <div id="area-freeshipping-{$area_id}" {if $isColissimoPickupPointFreeShipping eq 1}  style="display:none;" {/if}>
+                                                        <form action="{url path="/admin/module/ColissimoPickupPoint/area_freeshipping"}"  method="post">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon {if $area_id }alert-success{/if}">{intl l="Activate free shipping from (€) :" d="colissimopickuppoint.bo.default"}</span>
+                                                                <input type="hidden" name="area-id" value="{$area_id}">
+
+                                                                {ifloop rel="area_freeshipping"}
+                                                                {loop type="colissimo.pickup.point.area.freeshipping" name="area_freeshipping" area_id=$area_id}
+                                                                    <input type="number" step="0.01" name="cart-amount" class="form-control" value="{$CART_AMOUNT}">
+                                                                {/loop}
+                                                                {/ifloop}
+                                                                {elseloop rel="area_freeshipping"}
+                                                                    <input type="number" step="0.01" name="cart-amount" class="form-control" value="">
+                                                                {/elseloop}
+
+                                                                <span class="input-group-btn">
+                                                                    <button class="btn btn-default" type="submit">{intl l="Save"}</button>
+                                                                </span>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <thead>
+                                            <tr>
+                                                <th class="col-md-3">{intl l="Weight up to ... kg" d='colissimopickuppoint.bo.default'}</th>
+                                                <th class="col-md-3">{intl l="Untaxed Price up to ... %symbol" symbol=$currencySymbol d='colissimopickuppoint.bo.default'}</th>
+                                                <th class="col-md-5">{intl l="Price (%symbol)" symbol=$currencySymbol d='colissimopickuppoint.bo.default'}</th>
+                                                <th class="col-md-1">{intl l="Actions" d='colissimopickuppoint.bo.default'}</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {loop type="colissimo.pickup.point" name="colissimo_pickup_point_area_$ID" area_id={$area_id} }
+                                                <tr class="js-slice" data-area="{$area_id}" data-id="{$SLICE_ID}">
+                                                    <th class="col-md-3">
+                                                        <input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="{$MAX_WEIGHT}" data-old="{$MAX_WEIGHT}" />
                                                     </th>
-                                                    <th width="40%">
-                                                        <div id="area-freeshipping-{$area_id}" {if $isColissimoPickupPointFreeShipping eq 1}  style="display:none;" {/if}>
-                                                            <form action="{url path="/admin/module/ColissimoPickupPoint/area_freeshipping"}"  method="post">
-                                                                <div class="input-group">
-                                                                    <span class="input-group-addon {if $area_id }alert-success{/if}">{intl l="Activate free shipping from (€) :" d="colissimo.pickup.point.bo.default"}</span>
-                                                                    <input type="hidden" name="area-id" value="{$area_id}">
-
-                                                                    {ifloop rel="area_freeshipping"}
-                                                                        {loop type="colissimo.pickup.point.area.freeshipping" name="area_freeshipping" area_id=$area_id}
-                                                                        <input type="number" step="0.01" name="cart-amount" class="form-control" value="{$CART_AMOUNT}">
-                                                                        {/loop}
-                                                                    {/ifloop}
-                                                                    {elseloop rel="area_freeshipping"}
-                                                                        <input type="number" step="0.01" name="cart-amount" class="form-control" value="">
-                                                                    {/elseloop}
-
-                                                                    <span class="input-group-btn">
-                                                                        <button class="btn btn-default" type="submit">{intl l="Save"}</button>
-                                                                    </span>
-                                                                </div>
-                                                            </form>
+                                                    <th class="col-md-3">
+                                                        <input type="text" data-field="price-max" class="form-control js-slice-price-max" value="{$MAX_PRICE}" data-old="{$MAX_PRICE}" />
+                                                    </th>
+                                                    <th class="col-md-5">
+                                                        <input type="text" data-field="price" class="form-control js-slice-price" value="{$PRICE}" data-old="{$PRICE}" />
+                                                    </th>
+                                                    <th class="col-md-1">
+                                                        <div class="btn-group">
+                                                            {loop type="auth" name="can_change" role="ADMIN" module="colissimopickuppoint" access="UPDATE"}
+                                                                <a class="btn btn-default btn-xs js-slice-save" title="{intl d='colissimopickuppoint.bo.default' l='Save this price slice'}">
+                                                                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                                                                </a>
+                                                            {/loop}
+                                                            {loop type="auth" name="can_change" role="ADMIN" module="colissimopickuppoint" access="DELETE"}
+                                                                <a class="btn btn-default btn-xs js-slice-delete" title="{intl d='colissimopickuppoint.bo.default' l='Delete this price slice'}" data-id="{$ID}">
+                                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                                </a>
+                                                            {/loop}
                                                         </div>
                                                     </th>
                                                 </tr>
-                                                </thead>
-                                                <thead>
-                                                <tr>
-                                                    <th class="col-md-3">{intl l="Weight up to ... kg" d='colissimo.pickup.point.bo.default'}</th>
-                                                    <th class="col-md-3">{intl l="Untaxed Price up to ... %symbol" symbol=$currencySymbol d='colissimo.pickup.point.bo.default'}</th>
-                                                    <th class="col-md-5">{intl l="Price (%symbol)" symbol=$currencySymbol d='colissimo.pickup.point.bo.default'}</th>
-                                                    <th class="col-md-1">{intl l="Actions" d='colissimo.pickup.point.bo.default'}</th>
+                                            {/loop}
+
+                                            {* New slice *}
+                                            {loop type="auth" name="can_change" role="ADMIN" module="colissimopickuppoint" access="CREATE"}
+                                                <tr class="js-slice-new" data-area="{$area_id}" data-id="0">
+                                                    <th class="col-md-3">
+                                                        <input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="" />
+                                                    </th>
+                                                    <th class="col-md-3">
+                                                        <input type="text" data-field="price-max" class="form-control js-slice-price-max" value="" />
+                                                    </th>
+                                                    <th class="col-md-5">
+                                                        <input type="text" data-field="price" class="form-control js-slice-price" value="" />
+                                                    </th>
+                                                    <th class="col-md-1">
+                                                        <a class="btn btn-default btn-xs js-slice-add" title="{intl d='colissimopickuppoint.bo.default' l='Add this price slice'}" >
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </a>
+                                                    </th>
                                                 </tr>
-                                                </thead>
-                                                <tbody>
-                                                {loop type="colissimo.pickup.point" name="colissimo_pickup_point_area_$ID" area_id={$area_id} }
-                                                    <tr class="js-slice" data-area="{$area_id}" data-id="{$SLICE_ID}">
-                                                        <th class="col-md-3">
-                                                            <input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="{$MAX_WEIGHT}" data-old="{$MAX_WEIGHT}" />
-                                                        </th>
-                                                        <th class="col-md-3">
-                                                            <input type="text" data-field="price-max" class="form-control js-slice-price-max" value="{$MAX_PRICE}" data-old="{$MAX_PRICE}" />
-                                                        </th>
-                                                        <th class="col-md-5">
-                                                            <input type="text" data-field="price" class="form-control js-slice-price" value="{$PRICE}" data-old="{$PRICE}" />
-                                                        </th>
-                                                        <th class="col-md-1">
-                                                            <div class="btn-group">
-                                                                {loop type="auth" name="can_change" role="ADMIN" module="colissimopickuppoint" access="UPDATE"}
-                                                                    <a class="btn btn-default btn-xs js-slice-save" title="{intl d='colissimo.pickup.point.bo.default' l='Save this price slice'}">
-                                                                        <span class="glyphicon glyphicon-floppy-disk"></span>
-                                                                    </a>
-                                                                {/loop}
-                                                                {loop type="auth" name="can_change" role="ADMIN" module="colissimopickuppoint" access="DELETE"}
-                                                                    <a class="btn btn-default btn-xs js-slice-delete" title="{intl d='colissimo.pickup.point.bo.default' l='Delete this price slice'}" data-id="{$ID}">
-                                                                        <span class="glyphicon glyphicon-trash"></span>
-                                                                    </a>
-                                                                {/loop}
-                                                            </div>
-                                                        </th>
-                                                    </tr>
-                                                {/loop}
-
-                                                {* New slice *}
-                                                {loop type="auth" name="can_change" role="ADMIN" module="colissimopickuppoint" access="CREATE"}
-                                                    <tr class="js-slice-new" data-area="{$area_id}" data-id="0">
-                                                        <th class="col-md-3">
-                                                            <input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="" />
-                                                        </th>
-                                                        <th class="col-md-3">
-                                                            <input type="text" data-field="price-max" class="form-control js-slice-price-max" value="" />
-                                                        </th>
-                                                        <th class="col-md-5">
-                                                            <input type="text" data-field="price" class="form-control js-slice-price" value="" />
-                                                        </th>
-                                                        <th class="col-md-1">
-                                                            <a class="btn btn-default btn-xs js-slice-add" title="{intl d='colissimo.pickup.point.bo.default' l='Add this price slice'}" >
-                                                                <span class="glyphicon glyphicon-plus"></span>
-                                                            </a>
-                                                        </th>
-                                                    </tr>
-                                                {/loop}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                            {/loop}
+                                            </tbody>
+                                        </table>
                                     </div>
+                                </div>
 
-                                {/loop}
-                                {elseloop rel="area_loop"}
-                                    <div class="col-md-12">
-                                        <div class="alert alert-warning">
-                                            {intl d='colissimo.pickup.point.bo.default' l="You should first attribute shipping zones to the modules: "}
-                                            <a href="{url path="/admin/configuration/shipping_zones/update/$module_id"}">
-                                                {intl d='colissimo.pickup.point.bo.default' l="manage shipping zones"}
-                                            </a>
-                                        </div>
+                            {/loop}
+                            {elseloop rel="area_loop"}
+                                <div class="col-md-12">
+                                    <div class="alert alert-warning">
+                                        {intl d='colissimopickuppoint.bo.default' l="You should first attribute shipping zones to the modules: "}
+                                        <a href="{url path="/admin/configuration/shipping_zones/update/$module_id"}">
+                                            {intl d='colissimopickuppoint.bo.default' l="manage shipping zones"}
+                                        </a>
                                     </div>
-                                {/elseloop}
-                            </div>
+                                </div>
+                            {/elseloop}
+                        </div>
+                    </div>
 
+                    <div id="tax_rule" class="tab-pane {if $tab eq "tax_rule"}active{/if} form-container">
+                        <br>
+                        <div class="title">
+                            {intl l="Colissimo Tax Rule configuration" d='colissimopickuppoint.bo.default'}
                         </div>
 
+                        {form name="colissimopickuppoint_form_tax_rule_form"}
+                            <form action="{url path="/admin/module/ColissimoPickupPoint/tax_rule/save"}" method="post" >
+                                {form_hidden_fields}
+
+                                {render_form_field field='tax_rule_id'}
+
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit">{intl l="Save"}</button>
+                                </span>
+                            </form>
+                        {/form}
+                    </div>
                 </div>
             </div>
         </div>

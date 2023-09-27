@@ -67,6 +67,8 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
 
     const COLISSIMO_ENDPOINT = 'colissimo_pickup_point_endpoint_url';
 
+    const COLISSIMO_TAX_RULE_ID = 'colissimo_pickup_point_tax_rule_id';
+
     /**
      * These constants refer to the imported CSV file.
      * IMPORT_NB_COLS: file's number of columns (begin at 1)
@@ -262,7 +264,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
             throw new DeliveryException("Colissimo delivery unavailable for your cart weight or delivery country");
         }
 
-        return $this->buildOrderPostage($minPostage, $country, $lang);
+        return $this->buildOrderPostage($minPostage, $country, $lang, self::getConfigValue(self::COLISSIMO_TAX_RULE_ID));
     }
 
     /**
@@ -301,7 +303,8 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
     /**
      * Check if the config values exist, and creates them otherwise
      */
-    protected function checkModuleConfig() {
+    protected function checkModuleConfig(): void
+    {
         /** Colissimo Username / Account number */
         if (null === self::getConfigValue(self::COLISSIMO_USERNAME)) {
             self::setConfigValue(self::COLISSIMO_USERNAME, '');
@@ -320,6 +323,10 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
         /** Colissimo Endpoint url for pickup point */
         if (null === self::getConfigValue(self::COLISSIMO_ENDPOINT)) {
             self::setConfigValue(self::COLISSIMO_ENDPOINT, 'https://ws.colissimo.fr/pointretrait-ws-cxf/PointRetraitServiceWS/2.0?wsdl');
+        }
+
+        if (!self::getConfigValue(self::COLISSIMO_TAX_RULE_ID)) {
+            self::setConfigValue(self::COLISSIMO_TAX_RULE_ID, null);
         }
     }
 
