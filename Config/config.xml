@@ -38,6 +38,7 @@
         </service>
         <service id="api.colissimo.pickup.point" class="ColissimoPickupPoint\Listener\APIListener" scope="request">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="open_api.image.service"/>
             <tag name="kernel.event_subscriber"/>
         </service>
         <service id="colissimo.pickup.point.price.smarty.plugin" class="ColissimoPickupPoint\Smarty\Plugins\ColissimoPickupPointDeliveryPrice" scope="request">

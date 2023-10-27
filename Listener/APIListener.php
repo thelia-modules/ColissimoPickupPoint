@@ -3,7 +3,6 @@
 
 namespace ColissimoPickupPoint\Listener;
 
-
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use ColissimoPickupPoint\WebService\FindByAddress;
 use OpenApi\Events\DeliveryModuleOptionEvent;
@@ -26,14 +25,19 @@ class APIListener implements EventSubscriberInterface
     /** @var ContainerInterface  */
     protected $container;
 
+    /** @var ImageService  */
+    protected $imageService;
+
     /**
      * APIListener constructor.
      * @param ContainerInterface $container We need the container because we use a service from another module
      * which is not mandatory, and using its service without it being installed will crash
+     * @param ImageService $imageService
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, ImageService $imageService)
     {
         $this->container = $container;
+        $this->imageService = $imageService;
     }
 
     /**
@@ -209,13 +213,24 @@ class APIListener implements EventSubscriberInterface
         $minimumDeliveryDate = ''; // TODO (calculate delivery date from day of order)
         $maximumDeliveryDate = ''; // TODO (calculate delivery date from day of order
 
+        $image = null;
+        $imageQuery = ModuleImageQuery::create()->findByModuleId($deliveryModuleOptionEvent->getModule()->getId())->getFirst();
+
+        if (null !== $imageQuery) {
+            try {
+                $image = $this->imageService->getImageUrl($imageQuery, 'module');
+            } catch (\Exception $e) {
+                Tlog::getInstance()->addError($e);
+            }
+        }
+
         /** @var DeliveryModuleOption $deliveryModuleOption */
         $deliveryModuleOption = ($this->container->get('open_api.model.factory'))->buildModel('DeliveryModuleOption');
         $deliveryModuleOption
             ->setCode('ColissimoPickupPoint')
             ->setValid($isValid)
             ->setTitle('Colissimo Pickup Point')
-            ->setImage('')
+            ->setImage($image)
             ->setMinimumDeliveryDate($minimumDeliveryDate)
             ->setMaximumDeliveryDate($maximumDeliveryDate)
             ->setPostage($postage)
