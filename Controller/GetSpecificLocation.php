@@ -88,10 +88,10 @@ class GetSpecificLocation extends BaseFrontController
      */
     public function search(RequestStack $requestStack)
     {
-        $countryid = $requestStack->getCurrentRequest()->getQueryString('countryid');
-        $zipcode = $requestStack->getCurrentRequest()->getQueryString('zipcode');
-        $city = $requestStack->getCurrentRequest()->getQueryString('city');
-        $addressId = $requestStack->getCurrentRequest()->getQueryString('address');
+        $countryid = $requestStack->getCurrentRequest()->get('countryid');
+        $zipcode = $requestStack->getCurrentRequest()->get('zipcode');
+        $city = $requestStack->getCurrentRequest()->get('city');
+        $addressId = $requestStack->getCurrentRequest()->get('address');
 
         return $this->get($countryid, $zipcode, $city, $addressId);
     }

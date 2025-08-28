@@ -53,7 +53,8 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
             Argument::createIntTypeArgument('countryid', ''),
             Argument::createAnyTypeArgument('zipcode', ''),
             Argument::createAnyTypeArgument('city', ''),
-            Argument::createIntTypeArgument('address')
+            Argument::createAnyTypeArgument('address'),
+            Argument::createIntTypeArgument('address_id')
         );
     }
 
@@ -64,12 +65,15 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
      */
     public function buildArray()
     {
+        $response = [];
+
         // Find the address ... To find ! \m/
         $zipcode = $this->getZipcode();
         $city = $this->getCity();
         $countryId = $this->getCountryid();
+        $addressText = $this->getAddress();
 
-        $addressId = $this->getAddress();
+        $addressId = $this->getAddressId();
 
         if (!empty($addressId) && (!empty($zipcode) || !empty($city))) {
             throw new \InvalidArgumentException(
@@ -104,7 +108,7 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
             $address = array(
                 'zipcode' => $zipcode,
                 'city' => $city,
-                'address' => '',
+                'address' => $addressText,
                 'countrycode' => CountryQuery::create()
                     ->findOneById($countryId)
                     ->getIsoalpha2()
@@ -129,10 +133,8 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
 
         try {
             $response = $request->exec();
-        } catch (InvalidArgumentException $e) {
-            $response = array();
-        } catch (\SoapFault $e) {
-            $response = array();
+        } catch (\Exception $e) {
+            Tlog::getInstance()->error("Faild to get ColissimoPickupPoint relay points : " . $e->getMessage());
         }
 
         if (!is_array($response) && $response !== null) {
