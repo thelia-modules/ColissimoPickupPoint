@@ -30,4 +30,5 @@ return array(
     'home delivery' => 'Livraison à domicile',
     'include in results' => 'inclure dans la recherche',
     'zipcode' => 'code postal',
+    'Sorry, no delivery point was found' => 'Aucun point de livraison n\'a été trouvé',
 );

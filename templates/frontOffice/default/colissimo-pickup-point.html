@@ -10,7 +10,7 @@
             {colissimoPickupPointDeliveryPrice country=$country}
             {if $isValidMode|default:true !== false}
             {loop name="is.colissimo.pickup.point.up"  type="colissimo.pickup.point.around"}{/loop}
-            {ifloop rel="is.colissimo.pickup.point.up"}
+
                 <script>
                     var mapSOC = {
                         "map": null,
@@ -77,7 +77,7 @@
                                 mapSOC.position = marker;
                             } else {
                                 // Sinon on met le centre de la map sur Clermont-Ferrand ;)
-                                alert("{intl d=$ld l="Actual address can't be geolocated"}");
+                                console.log("{intl d=$ld l="Actual address can't be geolocated" js=1}");
                                 var myLatLng = new google.maps.LatLng(45.7789, 3.0782);
                                 mapSOC.map.setCenter(myLatLng);
                                 mapSOC.map.setZoom(3);
@@ -147,6 +147,15 @@
                             mapSOC.listMarker.push(marker);
                             attachMarker(marker, loc);
                         }
+
+                        if (mapSOC.locations.length === 0){
+                            buf +=  '<tr>' +
+                                '<td colspan="2">' +
+                                '<div class="alert alert-danger">{intl l="Sorry, no delivery point was found" d=$ld js=1}</div>' +
+                                '</td>' +
+                                '</tr>';
+                        }
+
                         document.getElementById("table-colissimo-pickup-point").innerHTML = buf;
                     }
 
@@ -331,7 +340,8 @@
                     <!-- Liste -->
                     <div class="col-md-5" style="padding-left: 0px;">
                         <div style="height: 450px; overflow-y: scroll;">
-                            <table class="table table-condensed table-striped" id="table-colissimo-pickup-point"></table>
+                            <table class="table table-condensed table-striped" id="table-colissimo-pickup-point">
+                            </table>
                         </div>
                     </div><!-- // Liste -->
                 </div>
@@ -383,7 +393,7 @@
                         <button type="submit" name="colissimo-pickup-point-pr" value="PR" class="btn btn-primary pull-right">{intl l="Choose this delivery mode" d=$ld}</button>
                     </div>
                 </div>
-            {/ifloop}
+
             {/if}
             </div>
         </div>
@@ -392,9 +402,6 @@
 
 <script>
     function loadScript() {
-
-        console.log("loadScript");
-
         var script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = 'https://maps.googleapis.com/maps/api/js'
@@ -410,7 +417,6 @@
     }
 
     function ColissimoPickupPointInitialize() {
-        console.log("ColissimoPickupPointInitialize");
         if (typeof initialize_so == 'function') {
             initialize_so();
             // Search city pseudo-form
@@ -419,7 +425,6 @@
     }
 
     function displayContent () {
-        console.log("displayContent");
         $("#google-map-colissimo-pickup-point").closest('tr').show(function () {
             $('.btn-checkout-next').hide();
             if (typeof initialize_so == 'function') {
