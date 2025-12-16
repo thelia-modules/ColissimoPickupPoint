@@ -53,12 +53,12 @@ class SetDeliveryModule implements EventSubscriberInterface
 
     public function __construct(RequestStack $requestStack)
     {
-        $this->request = $requestStack->getCurrentRequest();
+        $this->request = $requestStack;
     }
 
     public function getRequest()
     {
-        return $this->request;
+        return $this->request->getCurrentRequest();
     }
 
     protected function check_module($id)
@@ -68,14 +68,15 @@ class SetDeliveryModule implements EventSubscriberInterface
 
     private function callWebServiceFindRelayPointByIdFromRequest(Request $request)
     {
-        if ($request->get('colissimo_pickup_point_code')) {
-            $relayInfos = explode(':', $request->get('colissimo_pickup_point_code'));
+        $decodedContent = json_decode($request->getContent(), true);
+        if (isset($decodedContent['colissimo_pickup_point_code'])) {
+            $relayInfos = explode(':', $decodedContent['colissimo_pickup_point_code']);
             $relayCode = $relayInfos[0];
             $relayType = count($relayInfos) > 1 ? $relayInfos[1] : null ;
             $relayCountryCode = count($relayInfos) > 2 ? $relayInfos[2] : null ;
-        } elseif ($request->get('pickupAddress')) {
+        } elseif (isset($decodedContent['pickupAddress'])) {
             // The request sent by OpenApi is different
-            $relayInfos = $request->get('pickupAddress');
+            $relayInfos = $decodedContent['pickupAddress'];
             $relayCode = $relayInfos['id'];
             $relayType = isset($relayInfos['additionalData']['pickupPointType']) ? $relayInfos['additionalData']['pickupPointType'] : null;
             $codeReseau = isset($relayInfos['additionalData']['pickupPointNetwork']) ? $relayInfos['additionalData']['pickupPointNetwork'] : null;
