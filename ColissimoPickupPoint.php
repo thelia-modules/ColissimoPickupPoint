@@ -69,6 +69,10 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
 
     const COLISSIMO_TAX_RULE_ID = 'colissimo_pickup_point_tax_rule_id';
 
+    const COLISSIMO_ENABLE_A2P = 'colissimo_pickup_point_enable_a2p'; // Consigne automatique (Automate)
+    const COLISSIMO_ENABLE_BPR = 'colissimo_pickup_point_enable_bpr'; // Bureau de Poste
+    const COLISSIMO_ENABLE_CDI = 'colissimo_pickup_point_enable_cdi'; // Commerçant (Relais Pickup)
+
     /**
      * These constants refer to the imported CSV file.
      * IMPORT_NB_COLS: file's number of columns (begin at 1)

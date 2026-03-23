@@ -24,6 +24,7 @@
 namespace ColissimoPickupPoint\Form;
 
 use ColissimoPickupPoint\ColissimoPickupPoint;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -105,6 +106,36 @@ class ConfigureColissimoPickupPoint extends BaseForm
                     'data'        => ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_GOOGLE_KEY),
                     'label'       => $translator->trans('Google map API key', [], ColissimoPickupPoint::DOMAIN),
                     'label_attr'  => ['for' => ColissimoPickupPoint::COLISSIMO_GOOGLE_KEY]
+                ]
+            )
+            ->add(
+                ColissimoPickupPoint::COLISSIMO_ENABLE_A2P,
+                CheckboxType::class,
+                [
+                    'required'    => false,
+                    'data'        => (bool) ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_A2P, 1),
+                    'label'       => $translator->trans('Enable automatic lockers (A2P)', [], ColissimoPickupPoint::DOMAIN),
+                    'label_attr'  => ['for' => ColissimoPickupPoint::COLISSIMO_ENABLE_A2P]
+                ]
+            )
+            ->add(
+                ColissimoPickupPoint::COLISSIMO_ENABLE_BPR,
+                CheckboxType::class,
+                [
+                    'required'    => false,
+                    'data'        => (bool) ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_BPR, 1),
+                    'label'       => $translator->trans('Enable post offices (BPR)', [], ColissimoPickupPoint::DOMAIN),
+                    'label_attr'  => ['for' => ColissimoPickupPoint::COLISSIMO_ENABLE_BPR]
+                ]
+            )
+            ->add(
+                ColissimoPickupPoint::COLISSIMO_ENABLE_CDI,
+                CheckboxType::class,
+                [
+                    'required'    => false,
+                    'data'        => (bool) ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_CDI, 1),
+                    'label'       => $translator->trans('Enable pickup relay points (CDI)', [], ColissimoPickupPoint::DOMAIN),
+                    'label_attr'  => ['for' => ColissimoPickupPoint::COLISSIMO_ENABLE_CDI]
                 ]
             )
         ;
