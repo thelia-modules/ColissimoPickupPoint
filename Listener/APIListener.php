@@ -173,17 +173,7 @@ class APIListener implements EventSubscriberInterface
 
         $responses = $this->callWebService($pickupLocationEvent);
 
-        // Get enabled pickup point types from configuration
-        $enabledTypes = [];
-        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_A2P, 1)) {
-            $enabledTypes[] = 'A2P';
-        }
-        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_BPR, 1)) {
-            $enabledTypes[] = 'BPR';
-        }
-        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_CDI, 1)) {
-            $enabledTypes[] = 'CDI';
-        }
+        $enabledTypes = ColissimoPickupPoint::getDeliveryType();
 
         foreach ($responses as $response) {
             if (!empty($enabledTypes) && !in_array($response->typeDePoint, $enabledTypes)) {

@@ -142,6 +142,14 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
             $response = $newResponse;
         }
 
+        $enabledTypes = ColissimoPickupPoint::getDeliveryType();
+        if (!empty($enabledTypes) && is_array($response)) {
+            $response = array_filter($response, function($item) use ($enabledTypes) {
+                $pointType = isset($item->typeDePoint) ? $item->typeDePoint : null;
+                return empty($enabledTypes) || in_array($pointType, $enabledTypes);
+            });
+        }
+
         return $response;
     }
 
@@ -152,28 +160,12 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
      */
     public function parseResults(LoopResult $loopResult)
     {
-        $enabledTypes = [];
-        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_A2P, 1)) {
-            $enabledTypes[] = 'A2P';
-        }
-        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_BPR, 1)) {
-            $enabledTypes[] = 'BPR';
-        }
-        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_CDI, 1)) {
-            $enabledTypes[] = 'CDI';
-        }
-
         foreach ($loopResult->getResultDataCollection() as $item) {
             $loopResultRow = new LoopResultRow();
 
             //Tlog::getInstance()->addDebug(print_r($item, true));
             foreach ($item as $key => $value) {
                 $loopResultRow->set($key, $value);
-            }
-
-            $pointType = $loopResultRow->get('typeDePoint');
-            if (!empty($enabledTypes) && !in_array($pointType, $enabledTypes)) {
-                continue;
             }
 
             // format distance

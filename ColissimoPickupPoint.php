@@ -332,6 +332,19 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
         if (!self::getConfigValue(self::COLISSIMO_TAX_RULE_ID)) {
             self::setConfigValue(self::COLISSIMO_TAX_RULE_ID, null);
         }
+
+        /** Colissimo Option Type for pickup point */
+        if (!self::getConfigValue(self::COLISSIMO_ENABLE_A2P)) {
+            self::setConfigValue(self::COLISSIMO_ENABLE_A2P, 1);
+        }
+
+        if (!self::getConfigValue(self::COLISSIMO_ENABLE_BPR)) {
+            self::setConfigValue(self::COLISSIMO_ENABLE_BPR, 1);
+        }
+
+        if (!self::getConfigValue(self::COLISSIMO_ENABLE_CDI)) {
+            self::setConfigValue(self::COLISSIMO_ENABLE_CDI, 1);
+        }
     }
 
     public function postActivation(ConnectionInterface $con = null): void
@@ -409,6 +422,23 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
     public function getDeliveryMode()
     {
         return "pickup";
+    }
+
+    public static function getDeliveryType(): array
+    {
+        $enabledTypes = [];
+
+        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_A2P, 1)) {
+            $enabledTypes[] = 'A2P';
+        }
+        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_BPR, 1)) {
+            $enabledTypes[] = 'BPR';
+        }
+        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_CDI, 1)) {
+            $enabledTypes[] = 'CDI';
+        }
+
+        return $enabledTypes;
     }
 
     public static function configureServices(ServicesConfigurator $servicesConfigurator): void
