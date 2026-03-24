@@ -142,6 +142,14 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
             $response = $newResponse;
         }
 
+        $enabledTypes = ColissimoPickupPoint::getDeliveryType();
+        if (!empty($enabledTypes) && is_array($response)) {
+            $response = array_filter($response, function($item) use ($enabledTypes) {
+                $pointType = isset($item->typeDePoint) ? $item->typeDePoint : null;
+                return empty($enabledTypes) || in_array($pointType, $enabledTypes);
+            });
+        }
+
         return $response;
     }
 

@@ -173,7 +173,13 @@ class APIListener implements EventSubscriberInterface
 
         $responses = $this->callWebService($pickupLocationEvent);
 
+        $enabledTypes = ColissimoPickupPoint::getDeliveryType();
+
         foreach ($responses as $response) {
+            if (!empty($enabledTypes) && !in_array($response->typeDePoint, $enabledTypes)) {
+                continue;
+            }
+
             $pickupLocationEvent->appendLocation($this->createPickupLocationFromResponse($response));
         }
     }

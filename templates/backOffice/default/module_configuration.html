@@ -251,6 +251,43 @@
                                                 <input type="text" id="{$label_attr.for}" name="{$name}" class="form-control" value="{$value}" title="{$label}">
                                             </div>
                                         {/form_field}
+
+                                        <hr>
+                                        <h4>{intl l="Pickup point types" d='colissimopickuppoint.bo.default'}</h4>
+
+                                        {form_field form=$form field='colissimo_pickup_point_enable_a2p'}
+                                            <div class="form-group">
+                                                <div class="checkbox">
+                                                    <label for="{$label_attr.for}">
+                                                        <input type="checkbox" id="{$label_attr.for}" name="{$name}" value="1" {if $checked}checked{/if}>
+                                                        {$label}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        {/form_field}
+
+                                        {form_field form=$form field='colissimo_pickup_point_enable_bpr'}
+                                            <div class="form-group">
+                                                <div class="checkbox">
+                                                    <label for="{$label_attr.for}">
+                                                        <input type="checkbox" id="{$label_attr.for}" name="{$name}" value="1" {if $checked}checked{/if}>
+                                                        {$label}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        {/form_field}
+
+                                        {form_field form=$form field='colissimo_pickup_point_enable_cdi'}
+                                            <div class="form-group">
+                                                <div class="checkbox">
+                                                    <label for="{$label_attr.for}">
+                                                        <input type="checkbox" id="{$label_attr.for}" name="{$name}" value="1" {if $checked}checked{/if}>
+                                                        {$label}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        {/form_field}
+
                                         <br/>
                                         <button type="submit" name="save_mode" value="stay" class="form-submit-button btn btn-sm btn-default btn-success" title="{intl l='Save changes' d='colissimo.pickup.bo.default'}">{intl l='Save changes' d='colissimo.pickup.bo.default'} <span class="glyphicon glyphicon-ok"></span></button>
                                     </form>

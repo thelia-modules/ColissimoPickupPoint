@@ -69,6 +69,10 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
 
     const COLISSIMO_TAX_RULE_ID = 'colissimo_pickup_point_tax_rule_id';
 
+    const COLISSIMO_ENABLE_A2P = 'colissimo_pickup_point_enable_a2p'; // Consigne automatique (Automate)
+    const COLISSIMO_ENABLE_BPR = 'colissimo_pickup_point_enable_bpr'; // Bureau de Poste
+    const COLISSIMO_ENABLE_CDI = 'colissimo_pickup_point_enable_cdi'; // Commerçant (Relais Pickup)
+
     /**
      * These constants refer to the imported CSV file.
      * IMPORT_NB_COLS: file's number of columns (begin at 1)
@@ -328,6 +332,19 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
         if (!self::getConfigValue(self::COLISSIMO_TAX_RULE_ID)) {
             self::setConfigValue(self::COLISSIMO_TAX_RULE_ID, null);
         }
+
+        /** Colissimo Option Type for pickup point */
+        if (!self::getConfigValue(self::COLISSIMO_ENABLE_A2P)) {
+            self::setConfigValue(self::COLISSIMO_ENABLE_A2P, 1);
+        }
+
+        if (!self::getConfigValue(self::COLISSIMO_ENABLE_BPR)) {
+            self::setConfigValue(self::COLISSIMO_ENABLE_BPR, 1);
+        }
+
+        if (!self::getConfigValue(self::COLISSIMO_ENABLE_CDI)) {
+            self::setConfigValue(self::COLISSIMO_ENABLE_CDI, 1);
+        }
     }
 
     public function postActivation(ConnectionInterface $con = null): void
@@ -405,6 +422,23 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
     public function getDeliveryMode()
     {
         return "pickup";
+    }
+
+    public static function getDeliveryType(): array
+    {
+        $enabledTypes = [];
+
+        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_A2P, 1)) {
+            $enabledTypes[] = 'A2P';
+        }
+        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_BPR, 1)) {
+            $enabledTypes[] = 'BPR';
+        }
+        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_CDI, 1)) {
+            $enabledTypes[] = 'CDI';
+        }
+
+        return $enabledTypes;
     }
 
     public static function configureServices(ServicesConfigurator $servicesConfigurator): void

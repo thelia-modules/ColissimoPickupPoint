@@ -32,4 +32,8 @@ return array(
     'You must specify at least a price max or a weight max value.' => 'Vous devez spécifier au moins un prix maximum ou un poids maximum.',
     'Your slice has been saved' => 'Votre tranche a été enregistrée.',
     'server' => 'Serveur',
+    'Enable automatic lockers (A2P)' => 'Activer les consignes automatiques (A2P)',
+    'Enable post offices (BPR)' => 'Activer les bureaux de poste (BPR)',
+    'Enable pickup relay points (CDI)' => 'Activer les relais commerçants (CDI)',
+    'Pickup point types' => 'Types de points de retrait',
 );
