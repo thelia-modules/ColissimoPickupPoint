@@ -33,10 +33,7 @@ class SaveConfig extends BaseAdminController
             ColissimoPickupPoint::setConfigValue(ColissimoPickupPoint::COLISSIMO_PASSWORD, $vform->get(ColissimoPickupPoint::COLISSIMO_PASSWORD)->getData());
             ColissimoPickupPoint::setConfigValue(ColissimoPickupPoint::COLISSIMO_GOOGLE_KEY, $vform->get(ColissimoPickupPoint::COLISSIMO_GOOGLE_KEY)->getData());
             ColissimoPickupPoint::setConfigValue(ColissimoPickupPoint::COLISSIMO_ENDPOINT, $vform->get(ColissimoPickupPoint::COLISSIMO_ENDPOINT)->getData());
-
-            ColissimoPickupPoint::setConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_A2P, $vform->get(ColissimoPickupPoint::COLISSIMO_ENABLE_A2P)->getData());
-            ColissimoPickupPoint::setConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_BPR, $vform->get(ColissimoPickupPoint::COLISSIMO_ENABLE_BPR)->getData());
-            ColissimoPickupPoint::setConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_CDI, $vform->get(ColissimoPickupPoint::COLISSIMO_ENABLE_CDI)->getData());
+            ColissimoPickupPoint::setConfigValue(ColissimoPickupPoint::COLISSIMO_PICKUP_TYPE, $vform->get(ColissimoPickupPoint::COLISSIMO_PICKUP_TYPE)->getData());
 
             return $this->generateRedirect(
                 URL::getInstance()->absoluteUrl('/admin/module/ColissimoPickupPoint', ['current_tab' => 'configure'])

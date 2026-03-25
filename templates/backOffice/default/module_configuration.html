@@ -255,36 +255,14 @@
                                         <hr>
                                         <h4>{intl l="Pickup point types" d='colissimopickuppoint.bo.default'}</h4>
 
-                                        {form_field form=$form field='colissimo_pickup_point_enable_a2p'}
-                                            <div class="form-group">
-                                                <div class="checkbox">
-                                                    <label for="{$label_attr.for}">
-                                                        <input type="checkbox" id="{$label_attr.for}" name="{$name}" value="1" {if $checked}checked{/if}>
-                                                        {$label}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        {/form_field}
-
-                                        {form_field form=$form field='colissimo_pickup_point_enable_bpr'}
-                                            <div class="form-group">
-                                                <div class="checkbox">
-                                                    <label for="{$label_attr.for}">
-                                                        <input type="checkbox" id="{$label_attr.for}" name="{$name}" value="1" {if $checked}checked{/if}>
-                                                        {$label}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        {/form_field}
-
-                                        {form_field form=$form field='colissimo_pickup_point_enable_cdi'}
-                                            <div class="form-group">
-                                                <div class="checkbox">
-                                                    <label for="{$label_attr.for}">
-                                                        <input type="checkbox" id="{$label_attr.for}" name="{$name}" value="1" {if $checked}checked{/if}>
-                                                        {$label}
-                                                    </label>
-                                                </div>
+                                        {form_field form=$form field='colissimo_pickup_point_type'}
+                                            <div class="form-group {if $error}has-error{/if}">
+                                                <label for="{$label_attr.for}" class="control-label">{$label}{if $required} <span class="required">*</span>{/if} : </label>
+                                                <select id="{$label_attr.for}" name="{$name}" class="form-control">
+                                                    {foreach $choices as $choice_item}
+                                                        <option value="{$choice_item->value}" {if $value == $choice_item->value}selected{/if}>{$choice_item->label}</option>
+                                                    {/foreach}
+                                                </select>
                                             </div>
                                         {/form_field}
 

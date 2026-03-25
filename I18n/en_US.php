@@ -31,8 +31,4 @@ return array(
     'Your slice has been saved' => 'Your slice has been saved',
     '[DEPRECATED] Activate Dom delivery' => '[DEPRECATED] Activate Dom delivery',
     'server' => 'server',
-    'Enable automatic lockers (A2P)' => 'Enable automatic lockers (A2P)',
-    'Enable post offices (BPR)' => 'Enable post offices (BPR)',
-    'Enable pickup relay points (CDI)' => 'Enable pickup relay points (CDI)',
-    'Pickup point types' => 'Pickup point types',
 );

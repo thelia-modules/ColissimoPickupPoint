@@ -26,6 +26,7 @@ return array(
     'Message' => 'Message',
     'Or activate free shipping from (€) :' => 'Ou activer les frais de port gratuits à partir de (€)',
     'Package weight' => 'Poids des colis (kg)',
+    'Pickup point types' => 'Types de Relais Pickup',
     'Please change the access rights' => 'Merci de modifier les droits d\'accès',
     'Price (%symbol)' => 'Frais de livraison (%symbol)',
     'Price slices (Pickup Point)' => 'Tranches de prix (Points Retrait)',

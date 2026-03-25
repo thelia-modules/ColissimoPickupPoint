@@ -24,7 +24,7 @@
 namespace ColissimoPickupPoint\Form;
 
 use ColissimoPickupPoint\ColissimoPickupPoint;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -109,33 +109,22 @@ class ConfigureColissimoPickupPoint extends BaseForm
                 ]
             )
             ->add(
-                ColissimoPickupPoint::COLISSIMO_ENABLE_A2P,
-                CheckboxType::class,
+                ColissimoPickupPoint::COLISSIMO_PICKUP_TYPE,
+                ChoiceType::class,
                 [
-                    'required'    => false,
-                    'data'        => (bool) ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_A2P, 1),
-                    'label'       => $translator->trans('Enable automatic lockers (A2P)', [], ColissimoPickupPoint::DOMAIN),
-                    'label_attr'  => ['for' => ColissimoPickupPoint::COLISSIMO_ENABLE_A2P]
-                ]
-            )
-            ->add(
-                ColissimoPickupPoint::COLISSIMO_ENABLE_BPR,
-                CheckboxType::class,
-                [
-                    'required'    => false,
-                    'data'        => (bool) ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_BPR, 1),
-                    'label'       => $translator->trans('Enable post offices (BPR)', [], ColissimoPickupPoint::DOMAIN),
-                    'label_attr'  => ['for' => ColissimoPickupPoint::COLISSIMO_ENABLE_BPR]
-                ]
-            )
-            ->add(
-                ColissimoPickupPoint::COLISSIMO_ENABLE_CDI,
-                CheckboxType::class,
-                [
-                    'required'    => false,
-                    'data'        => (bool) ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_CDI, 1),
-                    'label'       => $translator->trans('Enable pickup relay points (CDI)', [], ColissimoPickupPoint::DOMAIN),
-                    'label_attr'  => ['for' => ColissimoPickupPoint::COLISSIMO_ENABLE_CDI]
+                    'constraints' => [new NotBlank()],
+                    'data'        => ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_PICKUP_TYPE, '1'),
+                    'label'       => $translator->trans('Pickup point type', [], ColissimoPickupPoint::DOMAIN),
+                    'label_attr'  => ['for' => ColissimoPickupPoint::COLISSIMO_PICKUP_TYPE],
+                    'choices'     => [
+                        $translator->trans('Post offices only', [], ColissimoPickupPoint::DOMAIN) => '0',
+                        $translator->trans('All points (post offices, Pickup relay points, lockers, neighbors...)', [], ColissimoPickupPoint::DOMAIN) => '1',
+                        $translator->trans('Pickup points only', [], ColissimoPickupPoint::DOMAIN) => '2',
+                        $translator->trans('Pickup relay merchants only', [], ColissimoPickupPoint::DOMAIN) => '3',
+                        $translator->trans('Post offices and Pickup relay merchants', [], ColissimoPickupPoint::DOMAIN) => '5',
+                        $translator->trans('All points without Pickup lockers', [], ColissimoPickupPoint::DOMAIN) => '10',
+                        $translator->trans('All points without Pickme neighbors relay', [], ColissimoPickupPoint::DOMAIN) => '11',
+                    ]
                 ]
             )
         ;

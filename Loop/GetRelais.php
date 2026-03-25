@@ -122,7 +122,7 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
             ->setZipCode($address['zipcode'])
             ->setCity($address['city'])
             ->setCountryCode($address['countrycode'])
-            ->setFilterRelay('1')
+            ->setFilterRelay((int) ColissimoPickupPoint::getRelayFilter())
             ->setRequestId(md5(microtime()))
             ->setLang('FR')
             ->setOptionInter('1')
@@ -134,20 +134,12 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
         try {
             $response = $request->exec();
         } catch (\Exception $e) {
-            Tlog::getInstance()->error("Faild to get ColissimoPickupPoint relay points : " . $e->getMessage());
+            Tlog::getInstance()->error("Failed to get ColissimoPickupPoint relay points : " . $e->getMessage());
         }
 
         if (!is_array($response) && $response !== null) {
             $newResponse[] = $response;
             $response = $newResponse;
-        }
-
-        $enabledTypes = ColissimoPickupPoint::getDeliveryType();
-        if (!empty($enabledTypes) && is_array($response)) {
-            $response = array_filter($response, function($item) use ($enabledTypes) {
-                $pointType = isset($item->typeDePoint) ? $item->typeDePoint : null;
-                return empty($enabledTypes) || in_array($pointType, $enabledTypes);
-            });
         }
 
         return $response;
