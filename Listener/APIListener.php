@@ -85,8 +85,6 @@ class APIListener implements EventSubscriberInterface
             $responses = $newResponse;
         }
 
-        dd($request, $responses);
-
         return $responses;
     }
 
