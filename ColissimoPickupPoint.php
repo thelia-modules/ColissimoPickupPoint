@@ -69,9 +69,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
 
     const COLISSIMO_TAX_RULE_ID = 'colissimo_pickup_point_tax_rule_id';
 
-    const COLISSIMO_ENABLE_A2P = 'colissimo_pickup_point_enable_a2p'; // Consigne automatique (Automate)
-    const COLISSIMO_ENABLE_BPR = 'colissimo_pickup_point_enable_bpr'; // Bureau de Poste
-    const COLISSIMO_ENABLE_CDI = 'colissimo_pickup_point_enable_cdi'; // Commerçant (Relais Pickup)
+    const COLISSIMO_PICKUP_TYPE = 'colissimo_pickup_point_type';
 
     /**
      * These constants refer to the imported CSV file.
@@ -333,17 +331,9 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
             self::setConfigValue(self::COLISSIMO_TAX_RULE_ID, null);
         }
 
-        /** Colissimo Option Type for pickup point */
-        if (!self::getConfigValue(self::COLISSIMO_ENABLE_A2P)) {
-            self::setConfigValue(self::COLISSIMO_ENABLE_A2P, 1);
-        }
-
-        if (!self::getConfigValue(self::COLISSIMO_ENABLE_BPR)) {
-            self::setConfigValue(self::COLISSIMO_ENABLE_BPR, 1);
-        }
-
-        if (!self::getConfigValue(self::COLISSIMO_ENABLE_CDI)) {
-            self::setConfigValue(self::COLISSIMO_ENABLE_CDI, 1);
+        /** Colissimo Pickup Type */
+        if (null === self::getConfigValue(self::COLISSIMO_PICKUP_TYPE)) {
+            self::setConfigValue(self::COLISSIMO_PICKUP_TYPE, '1');
         }
     }
 
@@ -424,21 +414,9 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
         return "pickup";
     }
 
-    public static function getDeliveryType(): array
+    public static function getRelayFilter(): ?string
     {
-        $enabledTypes = [];
-
-        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_A2P, 1)) {
-            $enabledTypes[] = 'A2P';
-        }
-        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_BPR, 1)) {
-            $enabledTypes[] = 'BPR';
-        }
-        if (ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_ENABLE_CDI, 1)) {
-            $enabledTypes[] = 'CDI';
-        }
-
-        return $enabledTypes;
+        return ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_PICKUP_TYPE, '1');
     }
 
     public static function configureServices(ServicesConfigurator $servicesConfigurator): void

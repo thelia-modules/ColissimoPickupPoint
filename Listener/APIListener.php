@@ -63,7 +63,7 @@ class APIListener implements EventSubscriberInterface
             ->setZipCode($pickupLocationEvent->getZipCode())
             ->setCity($pickupLocationEvent->getCity())
             ->setCountryCode($countryCode)
-            ->setFilterRelay('1')
+            ->setFilterRelay((int) ColissimoPickupPoint::getRelayFilter())
             ->setRequestId(md5(microtime()))
             ->setLang('FR')
             ->setOptionInter('1')
@@ -84,6 +84,8 @@ class APIListener implements EventSubscriberInterface
             $newResponse[] = $responses;
             $responses = $newResponse;
         }
+
+        dd($request, $responses);
 
         return $responses;
     }
@@ -173,13 +175,7 @@ class APIListener implements EventSubscriberInterface
 
         $responses = $this->callWebService($pickupLocationEvent);
 
-        $enabledTypes = ColissimoPickupPoint::getDeliveryType();
-
         foreach ($responses as $response) {
-            if (!empty($enabledTypes) && !in_array($response->typeDePoint, $enabledTypes)) {
-                continue;
-            }
-
             $pickupLocationEvent->appendLocation($this->createPickupLocationFromResponse($response));
         }
     }
