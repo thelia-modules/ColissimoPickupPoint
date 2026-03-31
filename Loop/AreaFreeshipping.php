@@ -4,6 +4,7 @@ namespace ColissimoPickupPoint\Loop;
 
 use ColissimoPickupPoint\Model\ColissimoPickupPointAreaFreeshipping;
 use ColissimoPickupPoint\Model\ColissimoPickupPointAreaFreeshippingQuery;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Element\BaseLoop;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
@@ -16,14 +17,14 @@ class AreaFreeshipping extends BaseLoop implements PropelSearchLoopInterface
     /**
      * @return ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createIntTypeArgument('area_id')
         );
     }
 
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         $areaId = $this->getAreaId();
 
@@ -36,7 +37,7 @@ class AreaFreeshipping extends BaseLoop implements PropelSearchLoopInterface
         return $modes;
     }
 
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         /** @var ColissimoPickupPointAreaFreeshipping $mode */
         foreach ($loopResult->getResultDataCollection() as $mode) {

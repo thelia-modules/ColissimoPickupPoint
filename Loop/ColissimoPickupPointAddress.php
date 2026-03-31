@@ -25,6 +25,7 @@ namespace ColissimoPickupPoint\Loop;
 
 use ColissimoPickupPoint\Model\AddressColissimoPickupPoint;
 use ColissimoPickupPoint\Model\AddressColissimoPickupPointQuery;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Loop\Address;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
@@ -43,7 +44,7 @@ class ColissimoPickupPointAddress extends Address
         $this->exists = AddressColissimoPickupPointQuery::create()->findPK($id) !== null;
     }
 
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         $id = $this->getId();
         $this->setExists($id[0]);
@@ -53,7 +54,7 @@ class ColissimoPickupPointAddress extends Address
                 parent::buildModelCriteria();
     }
 
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         if (!$this->exists) {
             return parent::parseResults($loopResult);

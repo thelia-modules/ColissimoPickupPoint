@@ -41,7 +41,7 @@ class ColissimoPickupPointId extends BaseLoop implements ArraySearchLoopInterfac
      *
      * @return array
      */
-    public function buildArray()
+    public function buildArray(): array
     {
         return array(ColissimoPickupPoint::getModCode());
     }
@@ -51,7 +51,7 @@ class ColissimoPickupPointId extends BaseLoop implements ArraySearchLoopInterfac
      *
      * @return LoopResult
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         foreach ($loopResult->getResultDataCollection() as $id) {
             $loopResultRow = new LoopResultRow();
@@ -63,7 +63,7 @@ class ColissimoPickupPointId extends BaseLoop implements ArraySearchLoopInterfac
         return $loopResult;
     }
 
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection();
     }

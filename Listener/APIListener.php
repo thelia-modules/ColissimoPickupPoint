@@ -6,22 +6,16 @@ namespace ColissimoPickupPoint\Listener;
 
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use ColissimoPickupPoint\WebService\FindByAddress;
-use OpenApi\Events\DeliveryModuleOptionEvent;
-use OpenApi\Events\OpenApiEvents;
-use OpenApi\Model\Api\DeliveryModuleOption;
-use OpenApi\Model\Api\ModelFactory;
+use Thelia\Api\Bridge\Propel\Event\DeliveryModuleOptionEvent;
+use Thelia\Api\Resource\DeliveryModuleOption;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Thelia\Core\Event\Delivery\PickupLocationEvent;
 use Thelia\Core\Event\TheliaEvents;
-use Thelia\Core\Translation\Translator;
-use Thelia\Model\CountryArea;
-use Thelia\Model\LangQuery;
-use Thelia\Model\PickupLocation;
-use Thelia\Model\PickupLocationAddress;
-use Thelia\Module\Exception\DeliveryException;
+use Thelia\Api\Resource\PickupLocationAddress;
+use Thelia\Api\Resource\DeliveryPickupLocation;
 
 class APIListener implements EventSubscriberInterface
 {
@@ -94,7 +88,7 @@ class APIListener implements EventSubscriberInterface
      * @param $response
      * @return PickupLocationAddress
      */
-    protected function createPickupLocationAddressFromResponse($response)
+    protected function createPickupLocationAddressFromResponse($response): PickupLocationAddress
     {
         /** We create the new location address */
         $pickupLocationAddress = new PickupLocationAddress();
@@ -129,13 +123,13 @@ class APIListener implements EventSubscriberInterface
      * Creates then returns a location from a response of the WebService
      *
      * @param $response
-     * @return PickupLocation
+     * @return DeliveryPickupLocation
      * @throws \Exception
      */
-    protected function createPickupLocationFromResponse($response)
+    protected function createPickupLocationFromResponse($response): DeliveryPickupLocation
     {
         /** We create the new location */
-        $pickupLocation = new PickupLocation();
+        $pickupLocation = new DeliveryPickupLocation();
 
         /** We set the differents properties of the location */
         $pickupLocation
@@ -144,13 +138,13 @@ class APIListener implements EventSubscriberInterface
             ->setAddress($this->createPickupLocationAddressFromResponse($response))
             ->setLatitude($response->coordGeolocalisationLatitude)
             ->setLongitude($response->coordGeolocalisationLongitude)
-            ->setOpeningHours(PickupLocation::MONDAY_OPENING_HOURS_KEY, $response->horairesOuvertureLundi)
-            ->setOpeningHours(PickupLocation::TUESDAY_OPENING_HOURS_KEY, $response->horairesOuvertureMardi)
-            ->setOpeningHours(PickupLocation::WEDNESDAY_OPENING_HOURS_KEY, $response->horairesOuvertureMercredi)
-            ->setOpeningHours(PickupLocation::THURSDAY_OPENING_HOURS_KEY, $response->horairesOuvertureJeudi)
-            ->setOpeningHours(PickupLocation::FRIDAY_OPENING_HOURS_KEY, $response->horairesOuvertureVendredi)
-            ->setOpeningHours(PickupLocation::SATURDAY_OPENING_HOURS_KEY, $response->horairesOuvertureSamedi)
-            ->setOpeningHours(PickupLocation::SUNDAY_OPENING_HOURS_KEY, $response->horairesOuvertureDimanche)
+            ->setOpeningHours(DeliveryPickupLocation::MONDAY_OPENING_HOURS_KEY, $response->horairesOuvertureLundi)
+            ->setOpeningHours(DeliveryPickupLocation::TUESDAY_OPENING_HOURS_KEY, $response->horairesOuvertureMardi)
+            ->setOpeningHours(DeliveryPickupLocation::WEDNESDAY_OPENING_HOURS_KEY, $response->horairesOuvertureMercredi)
+            ->setOpeningHours(DeliveryPickupLocation::THURSDAY_OPENING_HOURS_KEY, $response->horairesOuvertureJeudi)
+            ->setOpeningHours(DeliveryPickupLocation::FRIDAY_OPENING_HOURS_KEY, $response->horairesOuvertureVendredi)
+            ->setOpeningHours(DeliveryPickupLocation::SATURDAY_OPENING_HOURS_KEY, $response->horairesOuvertureSamedi)
+            ->setOpeningHours(DeliveryPickupLocation::SUNDAY_OPENING_HOURS_KEY, $response->horairesOuvertureDimanche)
             ->setModuleId(ColissimoPickupPoint::getModuleId())
         ;
 
@@ -206,8 +200,7 @@ class APIListener implements EventSubscriberInterface
         $minimumDeliveryDate = ''; // TODO (calculate delivery date from day of order)
         $maximumDeliveryDate = ''; // TODO (calculate delivery date from day of order
 
-        /** @var DeliveryModuleOption $deliveryModuleOption */
-        $deliveryModuleOption = ($this->container->get('open_api.model.factory'))->buildModel('DeliveryModuleOption');
+        $deliveryModuleOption = new DeliveryModuleOption();
         $deliveryModuleOption
             ->setCode('ColissimoPickupPoint')
             ->setValid($isValid)
@@ -228,12 +221,12 @@ class APIListener implements EventSubscriberInterface
         $listenedEvents = [];
 
         /** Check for old versions of Thelia where the events used by the API didn't exists */
-        if (class_exists(PickupLocation::class)) {
-            $listenedEvents[TheliaEvents::MODULE_DELIVERY_GET_PICKUP_LOCATIONS] = array("getPickupLocations", 128);
+        if (class_exists(DeliveryPickupLocation::class)) {
+            $listenedEvents[TheliaEvents::MODULE_DELIVERY_GET_PICKUP_LOCATIONS] = ["getPickupLocations", 128];
         }
 
         if (class_exists(DeliveryModuleOptionEvent::class)) {
-            $listenedEvents[OpenApiEvents::MODULE_DELIVERY_GET_OPTIONS] = array("getDeliveryModuleOptions", 128);
+            $listenedEvents[TheliaEvents::MODULE_DELIVERY_GET_OPTIONS] = ["getDeliveryModuleOptions", 128];
         }
 
         return $listenedEvents;

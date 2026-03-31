@@ -14,6 +14,7 @@ namespace ColissimoPickupPoint\Loop;
 
 use ColissimoPickupPoint\Model\OrderAddressColissimoPickupPoint;
 use ColissimoPickupPoint\Model\OrderAddressColissimoPickupPointQuery;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Element\BaseLoop;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
@@ -47,7 +48,7 @@ class ColissimoPickupPointOrderAddressLoop extends BaseLoop implements PropelSea
      *
      * @return \Thelia\Core\Template\Loop\Argument\ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createIntTypeArgument('id', null, true)
@@ -59,7 +60,7 @@ class ColissimoPickupPointOrderAddressLoop extends BaseLoop implements PropelSea
      *
      * @return \Propel\Runtime\ActiveQuery\ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         $query = OrderAddressColissimoPickupPointQuery::create();
 
@@ -75,7 +76,7 @@ class ColissimoPickupPointOrderAddressLoop extends BaseLoop implements PropelSea
      *
      * @return LoopResult
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         /** @var OrderAddressColissimoPickupPoint $orderAddressColissimoPickupPoint */
         foreach ($loopResult->getResultDataCollection() as $orderAddressColissimoPickupPoint) {

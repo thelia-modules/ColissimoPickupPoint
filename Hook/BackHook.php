@@ -25,4 +25,28 @@ class BackHook extends BaseHook
     {
         $event->add($this->render('order-edit-coliship-export.html'));
     }
+
+    public static function getSubscribedHooks(): array
+    {
+        return [
+            'module.configuration' => [
+                [
+                    'type' => 'back',
+                    'method' => 'onModuleConfiguration',
+                ],
+            ],
+            'module.config-js' => [
+                [
+                    'type' => 'back',
+                    'method' => 'onModuleConfigJs',
+                ],
+            ],
+            'order.tab-content' => [
+                [
+                    'type' => 'back',
+                    'method' => 'renderColishipExport',
+                ],
+            ],
+        ];
+    }
 }

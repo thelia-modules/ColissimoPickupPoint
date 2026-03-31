@@ -23,6 +23,7 @@
 
 namespace ColissimoPickupPoint\Listener;
 
+use ColissimoPickupPoint\Service\ColissimoPickupPointService;
 use ColissimoPickupPoint\Utils\ColissimoCodeReseau;
 use ColissimoPickupPoint\WebService\FindById;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -51,8 +52,10 @@ class SetDeliveryModule implements EventSubscriberInterface
 {
     protected $request;
 
-    public function __construct(RequestStack $requestStack)
-    {
+    public function __construct(
+        RequestStack $requestStack,
+        private readonly ColissimoPickupPointService $colissimoPickupPointService
+    ) {
         $this->request = $requestStack;
     }
 
@@ -171,9 +174,18 @@ class SetDeliveryModule implements EventSubscriberInterface
     {
         if ($this->check_module($event->getOrder()->getDeliveryModuleId())) {
             $request = $this->getRequest();
-
-            $tempAddress = AddressColissimoPickupPointQuery::create()
-                ->findPk($request->getSession()->get('ColissimoPickupPointDeliveryId'));
+            if (!$request->getSession()->has('pickup')) return;
+            $address = $request->getSession()->get('pickup')['address'];
+            $tempAddress = $this->colissimoPickupPointService->saveAddress(
+                company: $address['company'],
+                address1: $address['address1'],
+                address2: $address['address2'],
+                address3: $address['address3'],
+                countryIsoAlpha2: $address['countryCode'],
+                zipCode: $address['zipCode'],
+                city: $address['city'],
+            );
+            $request->getSession()->remove('pickup');
 
             if ($tempAddress === null) {
                 throw new \ErrorException('Got an error with ColissimoPickupPoint module. Please try again to checkout.');

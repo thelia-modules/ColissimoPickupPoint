@@ -35,4 +35,17 @@ class PdfHook extends BaseHook
             ));
         }
     }
+
+
+    public static function getSubscribedHooks(): array
+    {
+        return [
+            'invoice.after-delivery-module' => [
+                [
+                    'type' => 'pdf',
+                    'method' => 'onInvoiceAfterDeliveryModule',
+                ],
+            ],
+        ];
+    }
 }

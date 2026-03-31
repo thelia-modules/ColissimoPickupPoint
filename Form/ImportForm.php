@@ -15,7 +15,7 @@ use Thelia\Form\BaseForm;
  */
 class ImportForm extends BaseForm
 {
-    public static function getName()
+    public static function getName(): string
     {
         return 'colissimopickuppoint_import_form';
     }

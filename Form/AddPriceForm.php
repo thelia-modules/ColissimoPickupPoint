@@ -74,7 +74,7 @@ class AddPriceForm extends BaseForm
         }
     }
 
-    public static function getName()
+    public static function getName(): string
     {
         return 'colissimo_pickup_point_price_slices_create';
     }

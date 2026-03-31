@@ -37,15 +37,13 @@ use Thelia\Model\Country;
 use Thelia\Model\CountryArea;
 use Thelia\Model\Message;
 use Thelia\Model\MessageQuery;
-use Thelia\Model\ModuleImageQuery;
 use Thelia\Model\ModuleQuery;
 use Propel\Runtime\Connection\ConnectionInterface;
-use Thelia\Install\Database;
+use Thelia\Core\Install\Database;
+use Thelia\Model\OrderPostage;
 use Thelia\Model\State;
-use Thelia\Module\AbstractDeliveryModule;
 use Thelia\Module\AbstractDeliveryModuleWithState;
 use Thelia\Module\Exception\DeliveryException;
-use Thelia\Tools\Version\Version;
 
 class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
 {
@@ -93,7 +91,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
      * @return boolean
      * @throws PropelException
      */
-    public function isValidDelivery(Country $country, State $state = null)
+    public function isValidDelivery(Country $country, State $state = null): bool
     {
         if (empty($this->getAllAreasForCountry($country))) {
             return false;
@@ -221,7 +219,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
      * @throws DeliveryException
      * @throws PropelException
      */
-    public function getPostage(Country $country, State $state = null)
+    public function getPostage(Country $country, State $state = null): float|OrderPostage
     {
         $request = $this->getRequest();
 
@@ -297,7 +295,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
     }
 
     /** Return the module code */
-    public function getCode()
+    public function getCode(): string
     {
         return 'ColissimoPickupPoint';
     }

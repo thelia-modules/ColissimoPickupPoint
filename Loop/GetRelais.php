@@ -47,7 +47,7 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
     /**
      * @inheritdoc
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createIntTypeArgument('countryid', ''),
@@ -63,7 +63,7 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
      * @throws \ErrorException
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function buildArray()
+    public function buildArray(): array
     {
         $response = [];
 
@@ -150,7 +150,7 @@ class GetRelais extends BaseLoop implements ArraySearchLoopInterface
      *
      * @return LoopResult
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         foreach ($loopResult->getResultDataCollection() as $item) {
             $loopResultRow = new LoopResultRow();

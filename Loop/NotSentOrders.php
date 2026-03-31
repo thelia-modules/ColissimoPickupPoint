@@ -25,6 +25,7 @@ namespace ColissimoPickupPoint\Loop;
 
 use Propel\Runtime\ActiveQuery\Criteria;
 use ColissimoPickupPoint\ColissimoPickupPoint;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Loop\Argument\Argument;
 use Thelia\Core\Template\Loop\Argument\ArgumentCollection;
 use Thelia\Model\OrderQuery;
@@ -39,7 +40,7 @@ use Thelia\Model\OrderStatusQuery;
  */
 class NotSentOrders extends Order
 {
-    public function getArgDefinitions()
+    public function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(Argument::createBooleanTypeArgument('with_prev_next_info', false));
     }
@@ -49,7 +50,7 @@ class NotSentOrders extends Order
      *
      * @return \Propel\Runtime\ActiveQuery\ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         $status = OrderStatusQuery::create()
             ->filterByCode(

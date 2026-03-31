@@ -58,7 +58,7 @@ class UpdatePriceForm extends BaseForm
         }
     }
 
-    public static function getName()
+    public static function getName(): string
     {
         return 'colissimopickuppoint_update_price_form';
     }

@@ -3,6 +3,7 @@
 namespace ColissimoPickupPoint\Loop;
 
 use ColissimoPickupPoint\Model\ColissimoPickupPointPriceSlicesQuery;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Element\BaseLoop;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
@@ -15,14 +16,14 @@ class ColissimoPickupPointPriceSlices extends BaseLoop implements PropelSearchLo
     /**
      * @return ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createIntTypeArgument('area_id', null, true)
         );
     }
 
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         $areaId = $this->getAreaId();
 
@@ -33,7 +34,7 @@ class ColissimoPickupPointPriceSlices extends BaseLoop implements PropelSearchLo
         return $areaPrices;
     }
 
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         /** @var \ColissimoPickupPoint\Model\ColissimoPickupPointPriceSlices $price */
         foreach ($loopResult->getResultDataCollection() as $price) {

@@ -16,7 +16,7 @@ class ColissimoPickupPointGoogleApiKey extends AbstractSmartyPlugin
     protected $dispatcher;
 
     public function __construct(
-        Request $request,
+        ?Request $request = null,
         EventDispatcherInterface $dispatcher = null
     ) {
         $this->request = $request;

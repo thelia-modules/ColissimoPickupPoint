@@ -100,7 +100,7 @@ class GetSpecificLocation extends BaseFrontController
      * @param null $template
      * @return object|null $parser
      */
-    protected function getParser($template = null)
+    protected function getParser($template = null): ParserInterface
     {
         $parser = $this->container->get('thelia.parser');
 

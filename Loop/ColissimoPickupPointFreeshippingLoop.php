@@ -6,6 +6,7 @@ namespace ColissimoPickupPoint\Loop;
 
 use ColissimoPickupPoint\Model\ColissimoPickupPointFreeshipping;
 use ColissimoPickupPoint\Model\ColissimoPickupPointFreeshippingQuery;
+use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Thelia\Core\Template\Element\BaseLoop;
 use Thelia\Core\Template\Element\LoopResult;
 use Thelia\Core\Template\Element\LoopResultRow;
@@ -18,14 +19,14 @@ class ColissimoPickupPointFreeshippingLoop extends BaseLoop implements PropelSea
     /**
      * @return ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createIntTypeArgument('id')
         );
     }
 
-    public function buildModelCriteria()
+    public function buildModelCriteria(): ModelCriteria
     {
         if (null === $isFreeShippingActive = ColissimoPickupPointFreeshippingQuery::create()->findOneById(1)){
             $isFreeShippingActive = new ColissimoPickupPointFreeshipping();
@@ -37,7 +38,7 @@ class ColissimoPickupPointFreeshippingLoop extends BaseLoop implements PropelSea
         return ColissimoPickupPointFreeshippingQuery::create()->filterById(1);
     }
 
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         /** @var ColissimoPickupPointFreeshipping $freeshipping */
         foreach ($loopResult->getResultDataCollection() as $freeshipping) {

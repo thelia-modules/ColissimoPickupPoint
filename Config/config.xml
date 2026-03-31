@@ -25,20 +25,4 @@
         <form name="colissimopickuppoint_update_price_form" class="ColissimoPickupPoint\Form\UpdatePriceForm" />
     </forms>
 
-    <hooks>
-        <hook id="colissimo.pickup.point.hook.back" class="ColissimoPickupPoint\Hook\BackHook">
-            <tag name="hook.event_listener" event="module.configuration" type="back" method="onModuleConfiguration" />
-            <tag name="hook.event_listener" event="module.config-js" type="back" method="onModuleConfigJs" />
-            <tag name="hook.event_listener" event="order.tab-content" type="back" method="renderColishipExport" />
-        </hook>
-        <hook id="colissimo.pickup.point.hook.front" class="ColissimoPickupPoint\Hook\FrontHook" scope="request">
-            <tag name="hook.event_listener" event="order-delivery.extra" />
-            <tag name="hook.event_listener" event="order-invoice.delivery-address" />
-            <tag name="hook.event_listener" event="main.head-bottom" />
-        </hook>
-        <hook id="colissimo.pickup.point.hook.pdf" class="ColissimoPickupPoint\Hook\PdfHook" scope="request">
-            <tag name="hook.event_listener" event="invoice.after-delivery-module" type="pdf" method="onInvoiceAfterDeliveryModule" />
-        </hook>
-    </hooks>
-
 </config>
