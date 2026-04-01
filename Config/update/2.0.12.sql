@@ -1,0 +1,1 @@
+ALTER TABLE `address_colissimo_pickup_point` MODIFY `id` INTEGER NOT NULL AUTO_INCREMENT;

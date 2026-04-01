@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS `address_colissimo_pickup_point`;
 
 CREATE TABLE `address_colissimo_pickup_point`
 (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `title_id` INTEGER NOT NULL,
     `company` VARCHAR(255),
     `firstname` VARCHAR(255) NOT NULL,
@@ -26,8 +26,8 @@ CREATE TABLE `address_colissimo_pickup_point`
     `type` VARCHAR(10) NOT NULL,
     `cellphone` VARCHAR(20),
     PRIMARY KEY (`id`),
-    INDEX `FI_address_colissimo_pickup_point_customer_title_id` (`title_id`),
-    INDEX `FI_address_colissimo_pickup_point_country_id` (`country_id`),
+    INDEX `fi_address_colissimo_pickup_point_customer_title_id` (`title_id`),
+    INDEX `fi_address_colissimo_pickup_point_country_id` (`country_id`),
     CONSTRAINT `fk_address_colissimo_pickup_point_customer_title_id`
         FOREIGN KEY (`title_id`)
         REFERENCES `customer_title` (`id`)
@@ -74,7 +74,7 @@ CREATE TABLE `colissimo_pickup_point_price_slices`
     `franco_min_price` FLOAT,
     `price` FLOAT NOT NULL,
     PRIMARY KEY (`id`),
-    INDEX `FI_colissimo_pickup_point_price_slices_area_id` (`area_id`),
+    INDEX `fi_colissimo_pickup_point_price_slices_area_id` (`area_id`),
     CONSTRAINT `fk_colissimo_pickup_point_price_slices_area_id`
         FOREIGN KEY (`area_id`)
         REFERENCES `area` (`id`)
@@ -108,7 +108,7 @@ CREATE TABLE `colissimo_pickup_point_area_freeshipping`
     `area_id` INTEGER NOT NULL,
     `cart_amount` DECIMAL(18,2) DEFAULT 0.00,
     PRIMARY KEY (`id`),
-    INDEX `FI_colissimo_pickup_point_area_freeshipping_pr_area_id` (`area_id`),
+    INDEX `fi_colissimo_pickup_point_area_freeshipping_pr_area_id` (`area_id`),
     CONSTRAINT `fk_colissimo_pickup_point_area_freeshipping_pr_area_id`
         FOREIGN KEY (`area_id`)
         REFERENCES `area` (`id`)

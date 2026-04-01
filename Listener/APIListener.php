@@ -97,6 +97,7 @@ class APIListener implements EventSubscriberInterface
         $pickupLocationAddress
             ->setId($response->identifiant)
             ->setTitle($response->nom)
+            ->setCompany($response->nom)
             ->setAddress1($response->adresse1)
             ->setAddress2($response->adresse2)
             ->setAddress3($response->adresse3)

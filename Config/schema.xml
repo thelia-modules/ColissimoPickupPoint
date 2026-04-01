@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<database defaultIdMethod="native" name="TheliaMain" namespace="ColissimoPickupPoint\Model">
-
+<database defaultIdMethod="native" name="TheliaMain"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          namespace="ColissimoPickupPoint\Model"
+          xsi:noNamespaceSchemaLocation="../../../vendor/thelia/propel/resources/xsd/database.xsd" >
     <table name="address_colissimo_pickup_point">
-        <column name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="id" primaryKey="true" required="true" type="INTEGER" autoIncrement="true" />
         <column name="title_id" required="true" type="INTEGER" />
         <column name="company" size="255" type="VARCHAR" />
         <column name="firstname" required="true" size="255" type="VARCHAR" />
@@ -60,5 +62,5 @@
         </foreign-key>
     </table>
 
-    <external-schema filename="local/config/schema.xml" referenceOnly="true" />
+    <external-schema filename="vendor/thelia/config/schema.xml" referenceOnly="true"/>
 </database>

@@ -344,7 +344,7 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
             ColissimoPickupPointFreeshippingQuery::create()->findOne();
         } catch (\Exception $e) {
             $database = new Database($con->getWrappedConnection());
-            $database->insertSql(null, [__DIR__ . '/Config/thelia.sql']);
+            $database->insertSql(null, [__DIR__ . '/Config/TheliaMain.sql']);
         }
 
         if (!ColissimoPickupPointFreeshippingQuery::create()->filterById(1)->findOne()) {

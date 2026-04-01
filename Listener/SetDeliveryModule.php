@@ -177,13 +177,15 @@ class SetDeliveryModule implements EventSubscriberInterface
             if (!$request->getSession()->has('pickup')) return;
             $address = $request->getSession()->get('pickup')['address'];
             $tempAddress = $this->colissimoPickupPointService->saveAddress(
-                company: $address['company'],
+                company: $address['title'],
                 address1: $address['address1'],
                 address2: $address['address2'],
                 address3: $address['address3'],
                 countryIsoAlpha2: $address['countryCode'],
                 zipCode: $address['zipCode'],
                 city: $address['city'],
+                code: $address['id'],
+                type: $address['additionalData']['pickupPointType']
             );
             $request->getSession()->remove('pickup');
 
