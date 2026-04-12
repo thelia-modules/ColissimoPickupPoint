@@ -217,7 +217,7 @@ class APIListener implements EventSubscriberInterface
         $deliveryModuleOptionEvent->appendDeliveryModuleOptions($deliveryModuleOption);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         $listenedEvents = [];
 

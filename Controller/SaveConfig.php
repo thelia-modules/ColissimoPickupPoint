@@ -9,16 +9,16 @@ use Thelia\Core\Translation\Translator;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Tools\URL;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * @Route("/admin/module/ColissimoPickupPoint/configure", name="colissimo_pickup_point_configure_")
  */
 class SaveConfig extends BaseAdminController
 {
     /**
      * @Route("", name="save", methods="POST")
      */
+    #[Route('/admin/module/ColissimoPickupPoint/configure', name: 'colissimo_pickup_point_configure_')]
     public function save()
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('ColissimoPickupPoint'), AccessManager::UPDATE)) {

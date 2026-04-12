@@ -264,7 +264,7 @@ class SetDeliveryModule implements EventSubscriberInterface
      *
      * @api
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return array(
             TheliaEvents::ORDER_SET_DELIVERY_MODULE => array('isModuleColissimoPickupPoint', 64),

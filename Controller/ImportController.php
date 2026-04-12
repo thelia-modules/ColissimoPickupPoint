@@ -17,20 +17,20 @@ use Thelia\Model\Map\OrderTableMap;
 use Thelia\Model\OrderQuery;
 use Thelia\Model\OrderStatusQuery;
 use Thelia\Tools\URL;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 
 /**
  * Class ImportController
  * @package ColissimoPickupPoint\Controller
  * @author Etienne Perriere - OpenStudio <eperriere@openstudio.fr>
- * @Route("/admin/module/ColissimoPickupPoint/import", name="colissimo_pickup_point_import_")
  */
 class ImportController extends BaseAdminController
 {
     /**
      * @Route("", name="import_coliship_file", methods="GET")
      */
+    #[Route('/admin/module/ColissimoPickupPoint/import', name: 'colissimo_pickup_point_import_')]
     public function importAction(RequestStack $requestStack, EventDispatcherInterface $dispatcher)
     {
         $i = 0;

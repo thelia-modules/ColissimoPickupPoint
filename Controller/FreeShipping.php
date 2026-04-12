@@ -36,11 +36,10 @@ use Thelia\Core\HttpFoundation\Response;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Model\AreaQuery;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Module\Exception\DeliveryException;
 
 /**
- * @Route("/admin/module/ColissimoPickupPoint/", name="colissimo_pickup_point_freeshiping_")
  */
 class FreeShipping extends BaseAdminController
 {
@@ -50,6 +49,7 @@ class FreeShipping extends BaseAdminController
      * @Route("freeshipping", name="toggle_freeshing", methods="POST")
      * @return mixed|JsonResponse|Response|null
      */
+    #[Route('/admin/module/ColissimoPickupPoint/', name: 'colissimo_pickup_point_freeshiping_')]
     public function toggleFreeShippingActivation(): mixed
     {
         if (null !== $response = $this
@@ -94,9 +94,9 @@ class FreeShipping extends BaseAdminController
     }
 
     /**
-     * @Route("area_freeshipping", name="area_freeshing", methods="POST")
      * @return mixed|null|\Symfony\Component\HttpFoundation\Response
      */
+    #[Route('area_freeshipping', name: 'area_freeshing', methods: ['POST'])]
     public function setAreaFreeShipping(RequestStack $requestStack): mixed
     {
         if (null !== $response = $this

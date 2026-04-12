@@ -47,13 +47,12 @@ use Thelia\Model\OrderStatus;
 use Thelia\Model\OrderStatusQuery;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Core\Security\AccessManager;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Class Export
  * @package ColissimoPickupPoint\Controller
  * @author Thelia <info@thelia.net>
- * @Route("/admin/module/ColissimoPickupPoint/export", name="colissimo_pickup_point_export_")
  */
 class Export extends BaseAdminController
 {
@@ -65,6 +64,7 @@ class Export extends BaseAdminController
     /**
      * @Route("", name="export_coliship_file", methods="POST")
      */
+    #[Route('/admin/module/ColissimoPickupPoint/export', name: 'colissimo_pickup_point_export_')]
     public function export(Session $session)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('ColissimoPickupPoint'), AccessManager::UPDATE)) {

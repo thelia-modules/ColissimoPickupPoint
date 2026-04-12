@@ -33,19 +33,19 @@ use Thelia\Core\HttpFoundation\Response;
 use Thelia\Core\Template\ParserInterface;
 use Thelia\Core\Template\TemplateDefinition;
 use Thelia\Model\ConfigQuery;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Class SearchCityController
  * @package IciRelais\Controller
  * @author Thelia <info@thelia.net>
- * @Route("/module/ColissimoPickupPoint/", name="specific_location_")
  */
 class GetSpecificLocation extends BaseFrontController
 {
     /**
      * @Route("{countryid}/{zipcode}/{city}/{address}", name="get_location", methods="GET")
      */
+    #[Route('/module/ColissimoPickupPoint/', name: 'specific_location_')]
     public function get($countryid, $zipcode, $city, $address="")
     {
         $content = $this->renderRaw(
@@ -63,8 +63,8 @@ class GetSpecificLocation extends BaseFrontController
     }
 
     /**
-     * @Route("point/{point_id}", name="get_point_info")
      */
+    #[Route('point/{point_id}', name: 'get_point_info')]
     public function getPointInfo($point_id)
     {
         $req = new FindById();
@@ -84,8 +84,8 @@ class GetSpecificLocation extends BaseFrontController
     }
 
     /**
-     * @Route("points", name="search")
      */
+    #[Route('points', name: 'search')]
     public function search(RequestStack $requestStack)
     {
         $countryid = $requestStack->getCurrentRequest()->get('countryid');
