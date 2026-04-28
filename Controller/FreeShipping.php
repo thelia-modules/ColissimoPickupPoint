@@ -49,7 +49,7 @@ class FreeShipping extends BaseAdminController
      * @Route("freeshipping", name="toggle_freeshing", methods="POST")
      * @return mixed|JsonResponse|Response|null
      */
-    #[Route('/admin/module/ColissimoPickupPoint/', name: 'colissimo_pickup_point_freeshiping_')]
+    #[Route('/admin/module/ColissimoPickupPoint/freeshipping', name: 'colissimo_pickup_point_freeshipping', methods: ['POST'])]
     public function toggleFreeShippingActivation(): mixed
     {
         if (null !== $response = $this
@@ -96,7 +96,7 @@ class FreeShipping extends BaseAdminController
     /**
      * @return mixed|null|\Symfony\Component\HttpFoundation\Response
      */
-    #[Route('area_freeshipping', name: 'area_freeshing', methods: ['POST'])]
+    #[Route('/admin/module/ColissimoPickupPoint/area_freeshipping', name: 'colissimo_pickup_point_area_freeshipping', methods: ['POST'])]
     public function setAreaFreeShipping(RequestStack $requestStack): mixed
     {
         if (null !== $response = $this
