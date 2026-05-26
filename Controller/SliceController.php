@@ -14,14 +14,10 @@ use Thelia\Core\Security\Resource\AdminResources;
 use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Core\Translation\Translator;
 
-/**
- */
+#[Route('/admin/module/ColissimoPickupPoint/slice/', name: 'colissimo_pickup_point_slice_')]
 class SliceController extends BaseAdminController
 {
-    /**
-     * @Route("save", name="price_save", methods="POST")
-     */
-    #[Route('/admin/module/ColissimoPickupPoint/slice/', name: 'colissimo_pickup_point_slice_')]
+    #[Route('save', name: 'price_save', methods: ['POST'])]
     public function saveSliceAction(RequestStack $requestStack, Translator $translator)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), ['ColissimoPickupPoint'], AccessManager::UPDATE)) {
@@ -147,8 +143,6 @@ class SliceController extends BaseAdminController
         return $default;
     }
 
-    /**
-     */
     #[Route('delete', name: 'price_delete', methods: ['POST'])]
     public function deleteSliceAction(RequestStack $requestStack, Translator $translator)
     {
