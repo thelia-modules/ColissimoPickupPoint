@@ -223,9 +223,9 @@ class BackHook extends BaseHook
         return $result;
     }
 
-    private function trans(string $id): string
+    protected function trans(string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string
     {
-        return $this->translator->trans($id, [], ColissimoPickupPoint::DOMAIN);
+        return $this->translator->trans($id, $parameters, $domain ?? ColissimoPickupPoint::DOMAIN, $locale);
     }
 
     public static function getSubscribedHooks(): array
