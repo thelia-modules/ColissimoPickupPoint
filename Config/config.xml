@@ -16,13 +16,4 @@
         <loop class="ColissimoPickupPoint\Loop\ColissimoPickupPointFreeshippingLoop" name="colissimo.pickup.point.freeshipping" />
     </loops>
 
-    <forms>
-        <form name="colissimopickuppoint_freeshipping_form" class="ColissimoPickupPoint\Form\FreeShippingForm" />
-        <form name="colissimopickuppoint_configure_form" class="ColissimoPickupPoint\Form\ConfigureColissimoPickupPoint" />
-        <form name="colissimopickuppoint_export_order_form" class="ColissimoPickupPoint\Form\ExportOrder" />
-        <form name="colissimopickuppoint_import_form" class="ColissimoPickupPoint\Form\ImportForm"/>
-        <form name="colissimopickuppoint_price_slices_create_form" class="ColissimoPickupPoint\Form\AddPriceForm" />
-        <form name="colissimopickuppoint_update_price_form" class="ColissimoPickupPoint\Form\UpdatePriceForm" />
-    </forms>
-
 </config>

@@ -1,0 +1,150 @@
+{# ColissimoPickupPoint - module config JS (default-twig BO, vanilla JS, no jQuery) #}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // ----- Export: check / uncheck / reverse all -----
+    var checkboxes = Array.prototype.slice.call(document.querySelectorAll('#coliship-export-form input[type=checkbox][id^="export_"]'));
+
+    var setAll = function (state) {
+        checkboxes.forEach(function (cb) { cb.checked = state; });
+    };
+    var btnCheck = document.getElementById('check-all-but');
+    var btnUncheck = document.getElementById('uncheck-all-but');
+    var btnReverse = document.getElementById('reverse-all-but');
+    if (btnCheck) btnCheck.addEventListener('click', function () { setAll(true); });
+    if (btnUncheck) btnUncheck.addEventListener('click', function () { setAll(false); });
+    if (btnReverse) btnReverse.addEventListener('click', function () {
+        checkboxes.forEach(function (cb) { cb.checked = !cb.checked; });
+    });
+
+    // ----- Free shipping toggle (AJAX submit) -----
+    var freeshippingWrap = document.querySelector('[data-bo-coliship-freeshipping]');
+    var freeshippingForm = document.getElementById('freeshippingform');
+    if (freeshippingWrap && freeshippingForm) {
+        var checkbox = freeshippingWrap.querySelector('input[type=checkbox]');
+        if (checkbox) {
+            checkbox.addEventListener('change', function () {
+                var data = new URLSearchParams(new FormData(freeshippingForm));
+                fetch(freeshippingForm.getAttribute('action'), {
+                    method: freeshippingForm.getAttribute('method') || 'post',
+                    body: data,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                }).then(function (response) {
+                    if (!response.ok) {
+                        return response.json().then(function (json) {
+                            var body = document.getElementById('freeshipping-failed-body');
+                            if (body) body.innerHTML = json.error || '';
+                            var modalEl = document.getElementById('freeshipping-failed');
+                            if (modalEl && window.bootstrap) bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                        });
+                    }
+                });
+            });
+        }
+    }
+
+    // ----- Password toggle -----
+    document.querySelectorAll('[data-bo-coliship-toggle-pwd]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var input = document.getElementById(btn.getAttribute('data-bo-coliship-toggle-pwd'));
+            if (input) input.type = (input.type === 'password') ? 'text' : 'password';
+        });
+    });
+
+    // ----- Price slices (add / save / delete) -----
+    var slicesRoot = document.querySelector('[data-bo-coliship-slices]');
+    if (!slicesRoot) return;
+
+    var urlAdd = slicesRoot.getAttribute('data-url-add');
+    var urlDelete = slicesRoot.getAttribute('data-url-delete');
+    var tpl = document.getElementById('tpl-slice');
+
+    var showMessage = function (message) {
+        var modalEl = document.getElementById('colissimo-pickup-point_dialog');
+        if (!modalEl) { window.alert(message); return; }
+        modalEl.querySelector('.modal-body').innerHTML = message;
+        if (window.bootstrap) bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    };
+
+    var getSliceData = function (row) {
+        return {
+            id: row.getAttribute('data-id'),
+            area: row.getAttribute('data-area'),
+            price: (row.querySelector('.js-slice-price') || {}).value || '',
+            priceMax: (row.querySelector('.js-slice-price-max') || {}).value || '',
+            weightMax: (row.querySelector('.js-slice-weight-max') || {}).value || ''
+        };
+    };
+
+    var buildRow = function (slice) {
+        var fragment = tpl.content.cloneNode(true);
+        var row = fragment.querySelector('tr');
+        row.setAttribute('data-area', slice.area);
+        row.setAttribute('data-id', slice.id);
+        row.querySelector('.js-slice-weight-max').value = slice.weightMax || '';
+        row.querySelector('.js-slice-weight-max').setAttribute('data-old', slice.weightMax || '');
+        row.querySelector('.js-slice-price-max').value = slice.priceMax || '';
+        row.querySelector('.js-slice-price-max').setAttribute('data-old', slice.priceMax || '');
+        row.querySelector('.js-slice-price').value = slice.price || '';
+        row.querySelector('.js-slice-price').setAttribute('data-old', slice.price || '');
+        var del = row.querySelector('.js-slice-delete');
+        if (del) del.setAttribute('data-id', slice.id);
+        return row;
+    };
+
+    var post = function (url, data) {
+        return fetch(url, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(data)
+        }).then(function (response) {
+            return response.json().then(function (json) { return { ok: response.ok, json: json }; });
+        });
+    };
+
+    slicesRoot.addEventListener('click', function (event) {
+        var addBtn = event.target.closest('.js-slice-add');
+        var saveBtn = event.target.closest('.js-slice-save');
+        var delBtn = event.target.closest('.js-slice-delete');
+
+        if (addBtn) {
+            var addRow = addBtn.closest('tr');
+            var addData = getSliceData(addRow);
+            post(urlAdd, addData).then(function (res) {
+                if (res.ok && res.json.success) {
+                    addRow.querySelectorAll('input').forEach(function (i) { i.value = ''; });
+                    addRow.parentNode.insertBefore(buildRow(res.json.slice), addRow);
+                } else {
+                    showMessage((res.json.message || []).join ? res.json.message.join('<br>') : res.json.message);
+                }
+            }).catch(function () { showMessage('Error'); });
+            return;
+        }
+
+        if (saveBtn) {
+            var saveRow = saveBtn.closest('tr');
+            var saveData = getSliceData(saveRow);
+            post(urlAdd, saveData).then(function (res) {
+                if (res.ok && res.json.success) {
+                    saveRow.parentNode.insertBefore(buildRow(res.json.slice), saveRow);
+                    saveRow.remove();
+                } else {
+                    showMessage((res.json.message || []).join ? res.json.message.join('<br>') : res.json.message);
+                }
+            }).catch(function () { showMessage('Error'); });
+            return;
+        }
+
+        if (delBtn) {
+            var delRow = delBtn.closest('tr');
+            var delData = getSliceData(delRow);
+            post(urlDelete, delData).then(function (res) {
+                if (res.ok && res.json.success) {
+                    delRow.remove();
+                } else {
+                    showMessage(res.json.message);
+                }
+            }).catch(function () { showMessage('Error'); });
+        }
+    });
+});
+</script>

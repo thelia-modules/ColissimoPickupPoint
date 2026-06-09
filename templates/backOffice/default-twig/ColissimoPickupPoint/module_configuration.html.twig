@@ -1,0 +1,313 @@
+{# ColissimoPickupPoint - module configuration (default-twig BO) #}
+{% set d = 'colissimopickuppoint.bo.default' %}
+
+{% if check_rights_errors is not empty %}
+    {% for err in check_rights_errors %}
+        <div class="alert alert-danger">
+            <p>{{ err.ERRMES }} {{ err.ERRFILE }} | {{ 'Please change the access rights'|trans({}, d) }}.</p>
+        </div>
+    {% endfor %}
+{% else %}
+
+    <div class="modal fade" id="freeshipping-failed" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">{{ 'An error occured'|trans }}</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="freeshipping-failed-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <ul id="tabbed-menu" class="nav nav-tabs" role="tablist">
+                <li class="nav-item"><a class="nav-link {{ tab == 'export' ? 'active' }}" data-bs-toggle="tab" href="#export">{{ 'Export Coliship file'|trans({}, d) }}</a></li>
+                <li class="nav-item"><a class="nav-link {{ tab == 'import' ? 'active' }}" data-bs-toggle="tab" href="#import">{{ 'Import Coliship file'|trans({}, d) }}</a></li>
+                <li class="nav-item"><a class="nav-link {{ tab == 'prices_slices_tab' ? 'active' }}" data-bs-toggle="tab" href="#prices_slices_tab">{{ 'Price slices (Pickup Point)'|trans({}, d) }}</a></li>
+                <li class="nav-item"><a class="nav-link {{ tab == 'configure' ? 'active' }}" data-bs-toggle="tab" href="#configure">{{ 'Advanced configuration'|trans({}, d) }}</a></li>
+                <li class="nav-item"><a class="nav-link {{ tab == 'tax_rule' ? 'active' }}" data-bs-toggle="tab" href="#tax_rule">{{ 'Tax Rule'|trans({}, d) }}</a></li>
+            </ul>
+
+            <div class="tab-content pt-3">
+                {# ---------- EXPORT ---------- #}
+                <div id="export" class="tab-pane {{ tab == 'export' ? 'active' }}">
+                    <div class="card mb-3">
+                        <div class="card-header">{{ 'operations'|trans({}, d) }}</div>
+                        <div class="card-body">
+                            <button id="check-all-but" type="button" class="btn btn-sm btn-secondary">{{ 'Check all'|trans({}, d) }}</button>
+                            <button id="uncheck-all-but" type="button" class="btn btn-sm btn-secondary">{{ 'Uncheck all'|trans({}, d) }}</button>
+                            <button id="reverse-all-but" type="button" class="btn btn-sm btn-secondary">{{ 'Reverse selection'|trans({}, d) }}</button>
+                        </div>
+                    </div>
+
+                    {{ form_start(export_form, {'action': path('colissimo_pickup_point_export_'), 'attr': {'id': 'coliship-export-form'}}) }}
+                        <div class="card mb-3">
+                            <div class="card-header">{{ 'Change orders status after export'|trans({}, d) }}</div>
+                            <div class="card-body">
+                                {{ form_widget(export_form.new_status_id) }}
+                                <span class="form-text d-block">{{ '*If you choose this option, the exported orders would not be available on this page anymore'|trans({}, d) }}</span>
+                            </div>
+                        </div>
+
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'REF'|trans({}, d) }}</th>
+                                    <th>{{ 'Customer'|trans }}</th>
+                                    <th>{{ 'Date'|trans({}, d) }}</th>
+                                    <th>{{ 'Total taxed amount'|trans({}, d) }}</th>
+                                    <th>{{ 'Package weight'|trans({}, d) }}</th>
+                                    <th>{{ 'Export'|trans({}, d) }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for order in not_sent_orders %}
+                                {% set orderField = export_form.children['order_' ~ order.id] %}
+                                {% set weightField = export_form.children['order_weight_' ~ order.id] %}
+                                <tr>
+                                    <td><a href="/admin/order/update/{{ order.id }}">{{ order.ref }}</a></td>
+                                    <td>
+                                        {% if order.customer_id %}
+                                            <a href="/admin/customer/update?customer_id={{ order.customer_id }}">{{ order.customer_name }}</a>
+                                        {% else %}
+                                            {{ order.customer_name }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ order.create_date ? order.create_date|date('Y-m-d H:i:s') }}</td>
+                                    <td>{{ order.total }} {{ order.currency_symbol }}</td>
+                                    <td>
+                                        <input class="form-control text-center" type="text" name="{{ weightField.vars.full_name }}" value="0" required />
+                                        {% do weightField.setRendered %}
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="{{ orderField.vars.full_name }}" id="export_{{ order.id }}" value="true" class="form-check-input" />
+                                        {% do orderField.setRendered %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <button type="submit" name="export_colissimo_pickup_point_form" value="stay" class="btn btn-sm btn-secondary">{{ 'Export'|trans({}, d) }}</button>
+                    {{ form_end(export_form) }}
+                </div>
+
+                {# ---------- IMPORT ---------- #}
+                <div id="import" class="tab-pane {{ tab == 'import' ? 'active' }}">
+                    <div class="card">
+                        <div class="card-header">{{ 'The file has to be a CSV with 2 columns. The first contains the delivery reference, the second the order reference.'|trans({}, d) }}</div>
+                        <div class="card-body">
+                            {{ form_start(import_form, {'action': path('colissimo_pickup_point_import_'), 'attr': {'enctype': 'multipart/form-data'}}) }}
+                                {{ form_errors(import_form) }}
+                                <div class="mb-3">
+                                    {{ form_label(import_form.import_file) }}
+                                    {{ form_widget(import_form.import_file) }}
+                                    {{ form_errors(import_form.import_file) }}
+                                </div>
+                                <button type="submit" class="btn btn-primary">{{ 'Upload'|trans({}, d) }}</button>
+                            {{ form_end(import_form) }}
+                        </div>
+                    </div>
+                </div>
+
+                {# ---------- CONFIGURE ---------- #}
+                <div id="configure" class="tab-pane {{ tab == 'configure' ? 'active' }}">
+                    <div class="card">
+                        <div class="card-header">{{ 'Advanced configuration'|trans({}, d) }}</div>
+                        <div class="card-body">
+                            {{ form_start(config_form, {'action': path('colissimo_pickup_point_configure_')}) }}
+                                {{ form_errors(config_form) }}
+                                <div class="mb-3">
+                                    {{ form_label(config_form.colissimo_pickup_point_endpoint_url) }}
+                                    {{ form_widget(config_form.colissimo_pickup_point_endpoint_url) }}
+                                    {{ form_errors(config_form.colissimo_pickup_point_endpoint_url) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(config_form.colissimo_pickup_point_username) }}
+                                    {{ form_widget(config_form.colissimo_pickup_point_username) }}
+                                    {{ form_errors(config_form.colissimo_pickup_point_username) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(config_form.colissimo_pickup_point_password) }}
+                                    <div class="input-group">
+                                        {{ form_widget(config_form.colissimo_pickup_point_password, {'attr': {'id': 'mdp'}}) }}
+                                        <button type="button" class="btn btn-secondary" data-bo-coliship-toggle-pwd="mdp">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                    {{ form_errors(config_form.colissimo_pickup_point_password) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(config_form.colissimo_pickup_point_google_map_key) }}
+                                    {{ form_widget(config_form.colissimo_pickup_point_google_map_key) }}
+                                    {{ form_errors(config_form.colissimo_pickup_point_google_map_key) }}
+                                </div>
+
+                                <hr>
+                                <h4>{{ 'Pickup point types'|trans({}, d) }}</h4>
+                                <div class="mb-3">
+                                    {{ form_label(config_form.colissimo_pickup_point_type) }}
+                                    {{ form_widget(config_form.colissimo_pickup_point_type) }}
+                                    {{ form_errors(config_form.colissimo_pickup_point_type) }}
+                                </div>
+
+                                <button type="submit" name="save_mode" value="stay" class="btn btn-sm btn-success">{{ 'Save changes'|trans({}, d) }} <i class="bi bi-check-lg"></i></button>
+                            {{ form_end(config_form) }}
+                        </div>
+                    </div>
+                </div>
+
+                {# ---------- PRICE SLICES ---------- #}
+                <div id="prices_slices_tab" class="tab-pane {{ tab == 'prices_slices_tab' ? 'active' }}">
+                    <div class="row mb-3">
+                        {{ form_start(freeshipping_form, {'action': path('colissimo_pickup_point_freeshipping'), 'attr': {'id': 'freeshippingform'}}) }}
+                            <div class="col-md-4">
+                                <label class="form-label d-block">{{ 'Activate total free shipping '|trans({}, d) }}</label>
+                                <div class="form-check form-switch" data-bo-coliship-freeshipping>
+                                    <input class="form-check-input" type="checkbox" name="{{ freeshipping_form.freeshipping.vars.full_name }}" value="true" {{ freeshipping.active ? 'checked' }} />
+                                    {% do freeshipping_form.freeshipping.setRendered %}
+                                </div>
+                            </div>
+                            <div class="col-md-6" id="freeshipping-from">
+                                <div class="input-group">
+                                    <span class="input-group-text {{ freeshipping.from ? 'alert-success' }}">{{ 'Or activate free shipping from (€) :'|trans({}, d) }}</span>
+                                    <input type="number" name="{{ freeshipping_form.freeshipping_from.vars.full_name }}" class="form-control" value="{{ freeshipping.from }}" step="0.01">
+                                    {% do freeshipping_form.freeshipping_from.setRendered %}
+                                    <button class="btn btn-secondary" type="submit">{{ 'Save'|trans }}</button>
+                                </div>
+                            </div>
+                        {{ form_end(freeshipping_form) }}
+                    </div>
+
+                    <div class="alert alert-info">
+                        {{ 'You can create price slices by specifying a maximum cart weight and/or a maximum cart price.'|trans({}, d) }}
+                        {{ 'The slices are ordered by maximum cart weight then by maximum cart price.'|trans({}, d) }}
+                        {{ 'If a cart matches multiple slices, it will take the last slice following that order.'|trans({}, d) }}
+                        {{ "If you don't specify a cart weight in a slice, it will have priority over the slices with weight."|trans({}, d) }}
+                        {{ "If you don't specify a cart price in a slice, it will have priority over the other slices with the same weight."|trans({}, d) }}
+                        {{ 'If you specify both, the cart will require to have a lower weight AND a lower price in order to match the slice.'|trans({}, d) }}
+                    </div>
+
+                    <div class="slices"
+                         data-bo-coliship-slices
+                         data-url-add="{{ path('colissimo_pickup_point_slice_price_save') }}"
+                         data-url-delete="{{ path('colissimo_pickup_point_slice_price_delete') }}">
+                    {% for area in areas %}
+                        <div class="col-md-12 mb-4">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th><label class="clearfix"><small>{{ 'Area : '|trans({}, d) }}</small> {{ area.name }}</label></th>
+                                            <th width="40%">
+                                                <div id="area-freeshipping-{{ area.id }}" {{ freeshipping.active ? 'style="display:none;"' }}>
+                                                    <form action="{{ path('colissimo_pickup_point_area_freeshipping') }}" method="post">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text {{ area.id ? 'alert-success' }}">{{ 'Activate free shipping from (€) :'|trans({}, d) }}</span>
+                                                            <input type="hidden" name="area-id" value="{{ area.id }}">
+                                                            <input type="number" step="0.01" name="cart-amount" class="form-control" value="{{ area.freeshipping_amount }}">
+                                                            <button class="btn btn-secondary" type="submit">{{ 'Save'|trans }}</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th class="col-md-3">{{ 'Weight up to ... kg'|trans({}, d) }}</th>
+                                            <th class="col-md-3">{{ 'Untaxed Price up to ... %symbol'|trans({'%symbol': currency_symbol}, d) }}</th>
+                                            <th class="col-md-5">{{ 'Price (%symbol)'|trans({'%symbol': currency_symbol}, d) }}</th>
+                                            <th class="col-md-1">{{ 'Actions'|trans({}, d) }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for slice in area.slices %}
+                                            <tr class="js-slice" data-area="{{ area.id }}" data-id="{{ slice.slice_id }}">
+                                                <th class="col-md-3"><input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="{{ slice.max_weight }}" data-old="{{ slice.max_weight }}" /></th>
+                                                <th class="col-md-3"><input type="text" data-field="price-max" class="form-control js-slice-price-max" value="{{ slice.max_price }}" data-old="{{ slice.max_price }}" /></th>
+                                                <th class="col-md-5"><input type="text" data-field="price" class="form-control js-slice-price" value="{{ slice.price }}" data-old="{{ slice.price }}" /></th>
+                                                <th class="col-md-1">
+                                                    <div class="btn-group">
+                                                        {% if is_granted('UPDATE', {resource: 'admin.module', module: 'ColissimoPickupPoint'}) %}
+                                                            <a class="btn btn-secondary btn-sm js-slice-save" title="{{ 'Save this price slice'|trans({}, d) }}"><i class="bi bi-save"></i></a>
+                                                        {% endif %}
+                                                        {% if is_granted('DELETE', {resource: 'admin.module', module: 'ColissimoPickupPoint'}) %}
+                                                            <a class="btn btn-secondary btn-sm js-slice-delete" title="{{ 'Delete this price slice'|trans({}, d) }}" data-id="{{ slice.slice_id }}"><i class="bi bi-trash"></i></a>
+                                                        {% endif %}
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        {% endfor %}
+
+                                        {% if is_granted('CREATE', {resource: 'admin.module', module: 'ColissimoPickupPoint'}) %}
+                                            <tr class="js-slice-new" data-area="{{ area.id }}" data-id="0">
+                                                <th class="col-md-3"><input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="" /></th>
+                                                <th class="col-md-3"><input type="text" data-field="price-max" class="form-control js-slice-price-max" value="" /></th>
+                                                <th class="col-md-5"><input type="text" data-field="price" class="form-control js-slice-price" value="" /></th>
+                                                <th class="col-md-1">
+                                                    <a class="btn btn-secondary btn-sm js-slice-add" title="{{ 'Add this price slice'|trans({}, d) }}"><i class="bi bi-plus-lg"></i></a>
+                                                </th>
+                                            </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-md-12">
+                            <div class="alert alert-warning">
+                                {{ 'You should first attribute shipping zones to the modules: '|trans({}, d) }}
+                                <a href="/admin/configuration/shipping_zones/update/{{ module_id }}">{{ 'manage shipping zones'|trans({}, d) }}</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+
+                {# ---------- TAX RULE ---------- #}
+                <div id="tax_rule" class="tab-pane {{ tab == 'tax_rule' ? 'active' }}">
+                    <div class="title my-2">{{ 'Colissimo Tax Rule configuration'|trans({}, d) }}</div>
+                    {{ form_start(tax_rule_form, {'action': path('colissimo_pickup_point_tax_rule_save')}) }}
+                        <div class="mb-3">
+                            {{ form_widget(tax_rule_form.tax_rule_id) }}
+                        </div>
+                        <button class="btn btn-secondary" type="submit">{{ 'Save'|trans }}</button>
+                    {{ form_end(tax_rule_form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Generic message dialog used by the price-slice JS #}
+    <div class="modal fade" id="colissimo-pickup-point_dialog" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ 'Message'|trans({}, d) }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    {# Template row cloned by JS when adding a slice #}
+    <template id="tpl-slice">
+        <tr class="js-slice" data-area="" data-id="">
+            <th class="col-md-3"><input type="text" data-field="weight-max" class="form-control js-slice-weight-max" value="" data-old="" /></th>
+            <th class="col-md-3"><input type="text" data-field="price-max" class="form-control js-slice-price-max" value="" data-old="" /></th>
+            <th class="col-md-5"><input type="text" data-field="price" class="form-control js-slice-price" value="" data-old="" /></th>
+            <th class="col-md-1">
+                <div class="btn-group">
+                    {% if is_granted('UPDATE', {resource: 'admin.module', module: 'ColissimoPickupPoint'}) %}
+                        <a class="btn btn-secondary btn-sm js-slice-save" title="{{ 'Save this price slice'|trans({}, d) }}"><i class="bi bi-save"></i></a>
+                    {% endif %}
+                    {% if is_granted('DELETE', {resource: 'admin.module', module: 'ColissimoPickupPoint'}) %}
+                        <a class="btn btn-secondary btn-sm js-slice-delete" title="{{ 'Delete this price slice'|trans({}, d) }}" data-id=""><i class="bi bi-trash"></i></a>
+                    {% endif %}
+                </div>
+            </th>
+        </tr>
+    </template>
+{% endif %}

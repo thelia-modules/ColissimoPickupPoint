@@ -1,0 +1,17 @@
+{# ColissimoPickupPoint - order edit Coliship export (default-twig BO) #}
+{% set d = 'colissimo.pickup.point.ai' %}
+{% set exportField = export_form.children['order_' ~ order_id] %}
+<br/>
+<div class="card mb-3">
+    <div class="card-header">{{ 'Export Coliship file'|trans({}, d) }}</div>
+    <div class="card-body">
+        {{ form_start(export_form, {'action': path('colissimo_pickup_point_export_')}) }}
+            <input type="hidden" name="{{ export_form.new_status_id.vars.full_name }}" value="nochange" />
+            {% do export_form.new_status_id.setRendered %}
+            <input type="hidden" name="{{ exportField.vars.full_name }}" value="true" />
+            {% do exportField.setRendered %}
+            <button type="submit" name="export_order" value="stay" class="btn btn-sm btn-secondary" title="{{ 'Export'|trans({}, d) }}">{{ 'Export'|trans({}, d) }} <i class="bi bi-check-lg"></i></button>
+        {{ form_end(export_form) }}
+        <br/>
+    </div>
+</div>
