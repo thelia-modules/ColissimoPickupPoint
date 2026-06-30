@@ -88,10 +88,11 @@ class GetSpecificLocation extends BaseFrontController
     #[Route('points', name: 'search')]
     public function search(RequestStack $requestStack)
     {
-        $countryid = $requestStack->getCurrentRequest()->get('countryid');
-        $zipcode = $requestStack->getCurrentRequest()->get('zipcode');
-        $city = $requestStack->getCurrentRequest()->get('city');
-        $addressId = $requestStack->getCurrentRequest()->get('address');
+        $request = $requestStack->getCurrentRequest();
+        $countryid = $request->attributes->get('countryid', $request->query->get('countryid', $request->request->get('countryid')));
+        $zipcode = $request->attributes->get('zipcode', $request->query->get('zipcode', $request->request->get('zipcode')));
+        $city = $request->attributes->get('city', $request->query->get('city', $request->request->get('city')));
+        $addressId = $request->attributes->get('address', $request->query->get('address', $request->request->get('address')));
 
         return $this->get($countryid, $zipcode, $city, $addressId);
     }
