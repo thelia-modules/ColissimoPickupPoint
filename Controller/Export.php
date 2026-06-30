@@ -30,6 +30,7 @@ use ColissimoPickupPoint\Format\CSVLine;
 use ColissimoPickupPoint\Model\OrderAddressColissimoPickupPointQuery;
 use ColissimoPickupPoint\ColissimoPickupPoint;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Event\TheliaEvents;
@@ -65,7 +66,7 @@ class Export extends BaseAdminController
      * @Route("", name="export_coliship_file", methods="POST")
      */
     #[Route('/admin/module/ColissimoPickupPoint/export', name: 'colissimo_pickup_point_export_')]
-    public function export(Session $session)
+    public function export(Session $session, EventDispatcherInterface $dispatcher)
     {
         if (null !== $response = $this->checkAuth(array(AdminResources::MODULE), array('ColissimoPickupPoint'), AccessManager::UPDATE)) {
             return $response;
@@ -229,11 +230,11 @@ class Export extends BaseAdminController
                     if ($status_id === 'processing') {
                         $event = new OrderEvent($order);
                         $event->setStatus($status[OrderStatus::CODE_PROCESSING]['Id']);
-                        $this->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
+                        $dispatcher->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
                     } elseif ($status_id === 'sent') {
                         $event = new OrderEvent($order);
                         $event->setStatus($status[OrderStatus::CODE_SENT]['Id']);
-                        $this->dispatch(TheliaEvents::ORDER_UPDATE_STATUS, $event);
+                        $dispatcher->dispatch($event, TheliaEvents::ORDER_UPDATE_STATUS);
                     }
 
                 }
