@@ -30,7 +30,7 @@ class ImportController extends BaseAdminController
     /**
      * @Route("", name="import_coliship_file", methods="GET")
      */
-    #[Route('/admin/module/ColissimoPickupPoint/import', name: 'colissimo_pickup_point_import_')]
+    #[Route('/admin/module/ColissimoPickupPoint/import', name: 'colissimo_pickup_point_import_', methods: ['POST'])]
     public function importAction(RequestStack $requestStack, EventDispatcherInterface $dispatcher)
     {
         $i = 0;
