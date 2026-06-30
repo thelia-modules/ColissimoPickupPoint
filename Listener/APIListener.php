@@ -180,7 +180,10 @@ class APIListener implements EventSubscriberInterface
         }
 
         $isValid = true;
-        $locale = $this->requestStack->getCurrentRequest()->getSession()->getLang()->getLocale();
+        $request = $this->requestStack->getCurrentRequest();
+        $locale = (null !== $request && $request->hasSession())
+            ? $request->getSession()->getLang()->getLocale()
+            : (\Thelia\Model\LangQuery::create()->findOneByByDefault(true)?->getLocale() ?? 'en_US');
         $orderPostage = null;
 
         try {
