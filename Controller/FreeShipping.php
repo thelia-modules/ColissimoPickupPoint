@@ -66,6 +66,7 @@ class FreeShipping extends BaseAdminController
 
             if (null === $deliveryFreeshipping = ColissimoPickupPointFreeshippingQuery::create()->findOneById(1)){
                 $deliveryFreeshipping = new ColissimoPickupPointFreeshipping();
+                $deliveryFreeshipping->setId(1);
             }
 
             $deliveryFreeshipping
