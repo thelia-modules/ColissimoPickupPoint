@@ -133,25 +133,14 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
      */
     public static function getPostageAmount($areaId, $weight, $cartAmount = 0)
     {
+        /** The freeshipping configuration row may not exist yet (fresh activation, empty table) */
+        $freeshippingConfig = ColissimoPickupPointFreeshippingQuery::create()->findPk(1);
+
         /** Check if freeshipping is activated */
-        try {
-            $freeshipping = ColissimoPickupPointFreeshippingQuery::create()
-                ->findPk(1)
-                ->getActive()
-            ;
-        } catch (\Exception $exception) {
-            $freeshipping = false;
-        }
+        $freeshipping = null !== $freeshippingConfig && $freeshippingConfig->getActive();
 
         /** Get the total cart price needed to have a free shipping for all areas, if it exists */
-        try {
-            $freeshippingFrom = ColissimoPickupPointFreeshippingQuery::create()
-                ->findPk(1)
-                ->getFreeshippingFrom()
-            ;
-        } catch (\Exception $exception) {
-            $freeshippingFrom = false;
-        }
+        $freeshippingFrom = $freeshippingConfig?->getFreeshippingFrom();
 
         /** Set the initial postage price as 0 */
         $postage = 0;

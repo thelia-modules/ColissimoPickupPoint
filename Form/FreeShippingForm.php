@@ -68,7 +68,7 @@ class FreeShippingForm extends BaseForm
                 [
                     'required' => false,
                     'label' => Translator::getInstance()->trans("Free shipping from: ", [], ColissimoPickupPoint::DOMAIN),
-                    'data' => ColissimoPickupPointFreeshippingQuery::create()->findOneById(1)->getFreeshippingFrom(),
+                    'data' => ColissimoPickupPointFreeshippingQuery::create()->findOneById(1)?->getFreeshippingFrom(),
                     'scale' => 2,
                 ]
             );
