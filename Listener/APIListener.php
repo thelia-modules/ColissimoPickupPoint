@@ -109,7 +109,7 @@ class APIListener implements EventSubscriberInterface
             ->setCountryCode($response->codePays)
             ->setFirstName('')
             ->setLastName('')
-            ->setIsDefault(0)
+            ->setIsDefault(false)
             ->setLabel('')
             ->setAdditionalData([
                 'pickupPointType' => $response->typeDePoint,
@@ -137,19 +137,34 @@ class APIListener implements EventSubscriberInterface
             ->setId($response->identifiant)
             ->setTitle($response->nom)
             ->setAddress($this->createPickupLocationAddressFromResponse($response))
-            ->setLatitude($response->coordGeolocalisationLatitude)
-            ->setLongitude($response->coordGeolocalisationLongitude)
-            ->setOpeningHours(DeliveryPickupLocation::MONDAY_OPENING_HOURS_KEY, $response->horairesOuvertureLundi)
-            ->setOpeningHours(DeliveryPickupLocation::TUESDAY_OPENING_HOURS_KEY, $response->horairesOuvertureMardi)
-            ->setOpeningHours(DeliveryPickupLocation::WEDNESDAY_OPENING_HOURS_KEY, $response->horairesOuvertureMercredi)
-            ->setOpeningHours(DeliveryPickupLocation::THURSDAY_OPENING_HOURS_KEY, $response->horairesOuvertureJeudi)
-            ->setOpeningHours(DeliveryPickupLocation::FRIDAY_OPENING_HOURS_KEY, $response->horairesOuvertureVendredi)
-            ->setOpeningHours(DeliveryPickupLocation::SATURDAY_OPENING_HOURS_KEY, $response->horairesOuvertureSamedi)
-            ->setOpeningHours(DeliveryPickupLocation::SUNDAY_OPENING_HOURS_KEY, $response->horairesOuvertureDimanche)
+            ->setLatitude($this->castCoordinate($response->coordGeolocalisationLatitude))
+            ->setLongitude($this->castCoordinate($response->coordGeolocalisationLongitude))
+            ->setOpeningHours((int) DeliveryPickupLocation::MONDAY_OPENING_HOURS_KEY, (string) $response->horairesOuvertureLundi)
+            ->setOpeningHours((int) DeliveryPickupLocation::TUESDAY_OPENING_HOURS_KEY, (string) $response->horairesOuvertureMardi)
+            ->setOpeningHours((int) DeliveryPickupLocation::WEDNESDAY_OPENING_HOURS_KEY, (string) $response->horairesOuvertureMercredi)
+            ->setOpeningHours((int) DeliveryPickupLocation::THURSDAY_OPENING_HOURS_KEY, (string) $response->horairesOuvertureJeudi)
+            ->setOpeningHours((int) DeliveryPickupLocation::FRIDAY_OPENING_HOURS_KEY, (string) $response->horairesOuvertureVendredi)
+            ->setOpeningHours((int) DeliveryPickupLocation::SATURDAY_OPENING_HOURS_KEY, (string) $response->horairesOuvertureSamedi)
+            ->setOpeningHours((int) DeliveryPickupLocation::SUNDAY_OPENING_HOURS_KEY, (string) $response->horairesOuvertureDimanche)
             ->setModuleId(ColissimoPickupPoint::getModuleId())
         ;
 
         return $pickupLocation;
+    }
+
+    /**
+     * The web service returns coordinates as strings, possibly empty
+     *
+     * @param mixed $coordinate
+     * @return float|null
+     */
+    protected function castCoordinate($coordinate): ?float
+    {
+        if (null === $coordinate || '' === $coordinate) {
+            return null;
+        }
+
+        return (float) $coordinate;
     }
 
     /**
