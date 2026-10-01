@@ -50,23 +50,24 @@ class APIListener implements EventSubscriberInterface
             $countryCode = $country->getIsoalpha2();
         }
 
-        // Then ask the Web Service
-        $request = new FindByAddress();
-        $request
-            ->setAddress($pickupLocationEvent->getAddress())
-            ->setZipCode($pickupLocationEvent->getZipCode())
-            ->setCity($pickupLocationEvent->getCity())
-            ->setCountryCode($countryCode)
-            ->setFilterRelay((int) ColissimoPickupPoint::getRelayFilter())
-            ->setRequestId(md5(microtime()))
-            ->setLang('FR')
-            ->setOptionInter('1')
-            ->setShippingDate(date('d/m/Y'))
-            ->setAccountNumber(ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_USERNAME))
-            ->setPassword(ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_PASSWORD))
-        ;
-
+        // Then ask the Web Service. The client downloads the WSDL when it is built: a service that cannot be
+        // reached must end up as "no pickup point", not as an exception.
         try {
+            $request = new FindByAddress();
+            $request
+                ->setAddress($pickupLocationEvent->getAddress())
+                ->setZipCode($pickupLocationEvent->getZipCode())
+                ->setCity($pickupLocationEvent->getCity())
+                ->setCountryCode($countryCode)
+                ->setFilterRelay((int) ColissimoPickupPoint::getRelayFilter())
+                ->setRequestId(md5(microtime()))
+                ->setLang('FR')
+                ->setOptionInter('1')
+                ->setShippingDate(date('d/m/Y'))
+                ->setAccountNumber(ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_USERNAME))
+                ->setPassword(ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_PASSWORD))
+            ;
+
             $responses = $request->exec();
         } catch (InvalidArgumentException $e) {
             $responses = array();

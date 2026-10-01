@@ -205,6 +205,7 @@ class SetDeliveryModule implements EventSubscriberInterface
             $update = OrderAddressQuery::create()
                 ->findPK($event->getOrder()->getDeliveryOrderAddressId())
                 ->setCompany($tempAddress->getCompany())
+                ->setCountryId($tempAddress->getCountryId())
                 ->setAddress1($tempAddress->getAddress1())
                 ->setAddress2($tempAddress->getAddress2())
                 ->setAddress3($tempAddress->getAddress3())
