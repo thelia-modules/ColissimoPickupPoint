@@ -41,7 +41,11 @@ abstract class BaseWebService
 
     public function __construct($wsdl, $web_function=null)
     {
-        $this->soap = new \SoapClient($wsdl);
+        // A short timeout: the search of pickup points is part of the checkout page
+        $this->soap = new \SoapClient($wsdl, [
+            'connection_timeout' => 5,
+            'stream_context' => stream_context_create(['http' => ['timeout' => 5]]),
+        ]);
         $this->web_function=$web_function;
     }
 
