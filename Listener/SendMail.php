@@ -29,7 +29,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Core\Event\Order\OrderEvent;
 use Thelia\Core\Event\TheliaEvents;
-use Thelia\Core\Template\ParserInterface;
 use Thelia\Mailer\MailerFactory;
 use Thelia\Model\ConfigQuery;
 use Thelia\Model\LangQuery;
@@ -44,13 +43,11 @@ use Thelia\Model\OrderAddressQuery;
 class SendMail implements EventSubscriberInterface
 {
 
-    protected $parser;
     protected $request;
     protected $mailer;
 
-    public function __construct(ParserInterface $parser, MailerFactory $mailer, RequestStack $requestStack)
+    public function __construct(MailerFactory $mailer, RequestStack $requestStack)
     {
-        $this->parser = $parser;
         $this->mailer = $mailer;
         $this->request = $requestStack->getCurrentRequest();
     }
@@ -98,21 +95,6 @@ class SendMail implements EventSubscriberInterface
                 $pickupCity = $orderDeliveryAddress->getCity();
                 $pickupCellphone = $orderDeliveryAddress->getCellphone();
 
-                $this->parser->assign('customer_id', $customer->getId());
-                $this->parser->assign('order_ref', $order->getRef());
-                $this->parser->assign('order_date', $order->getCreatedAt());
-                $this->parser->assign('update_date', $order->getUpdatedAt());
-                $this->parser->assign('package', $order->getDeliveryRef());
-                $this->parser->assign('store_name', ConfigQuery::read('store_name'));
-                $this->parser->assign('store_url', $urlSite);
-                $this->parser->assign('pickup_name', $pickupName);
-                $this->parser->assign('pickup_address1', $pickupAddress1);
-                $this->parser->assign('pickup_address2', $pickupAddress2);
-                $this->parser->assign('pickup_address3', $pickupAddress3);
-                $this->parser->assign('pickup_zipcode', $pickupZipCode);
-                $this->parser->assign('pickup_city', $pickupCity);
-                $this->parser->assign('pickup_cellphone', $pickupCellphone);
-
                 $message
                     ->setLocale($order->getLang()->getLocale());
 
@@ -122,6 +104,18 @@ class SendMail implements EventSubscriberInterface
                     [
                         'order_id' => $order->getId(),
                         'order_ref' => $order->getRef(),
+                        'order_date' => $order->getCreatedAt(),
+                        'update_date' => $order->getUpdatedAt(),
+                        'package' => $order->getDeliveryRef(),
+                        'store_name' => ConfigQuery::read('store_name'),
+                        'store_url' => $urlSite,
+                        'pickup_name' => $pickupName,
+                        'pickup_address1' => $pickupAddress1,
+                        'pickup_address2' => $pickupAddress2,
+                        'pickup_address3' => $pickupAddress3,
+                        'pickup_zipcode' => $pickupZipCode,
+                        'pickup_city' => $pickupCity,
+                        'pickup_cellphone' => $pickupCellphone,
                     ]
                 );
             }

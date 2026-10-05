@@ -1,0 +1,40 @@
+{% extends "email-layout.html.twig" %}
+
+{# Do not provide a "Open in browser" link #}
+{% block browser %}{% endblock %}
+{# No pre-header #}
+{% block pre_header %}{% endblock %}
+
+{# Subject #}
+{% block email_subject %}{{ 'Your order confirmation Nº %ref'|trans({'%ref': order_ref}, 'colissimopickuppoint.email.default', locale) }}{% endblock %}
+
+{# Title #}
+{% block email_title %}{% endblock %}
+
+{# Content #}
+{% block email_content %}
+    {% for customer in loop('customer.politesse', 'customer', {id: customer_id, current: '0'}) %}
+        <p>{{ 'Hello'|trans({}, 'colissimopickuppoint.email.default', locale) }}
+            {{ customer.FIRSTNAME }} {{ customer.LASTNAME }},
+        </p>
+    {% endfor %}
+
+    <p>{{ 'We are pleased to inform you that your order number'|trans({}, 'colissimopickuppoint.email.default', locale) }} {{ order_ref }} {{ 'has been shipped on'|trans({}, 'colissimopickuppoint.email.default', locale) }} {{ format_date(update_date, 'date') }}.</p>
+    <p>{{ 'Your order has been taking care of by La Poste.'|trans({}, 'colissimopickuppoint.email.default', locale) }} {{ 'Your tracking number is '|trans({}, 'colissimopickuppoint.email.default', locale) }} <strong>{{ package }}</strong> {{ ' and allows you to follow your package online at <a href="https://www.colissimo.fr/portail_colissimo/suivreResultat.do?parcelnumber=%package">https://www.colissimo.fr/portail_colissimo/suivreResultat</a>'|trans({'%package': package}, 'colissimopickuppoint.email.default', locale)|raw }}</p>
+    <p>{{ 'Upon receipt, you can withdraw your order in your pickup point:'|trans({}, 'colissimopickuppoint.email.default', locale) }}</p>
+    <p>
+        <strong>{{ pickup_name }}<br/></strong>
+        {{ pickup_address1 }}<br/>
+        {% if pickup_address2 != '' %}
+            {{ pickup_address2 }}<br/>
+        {% endif %}
+        {% if pickup_address3 != '' %}
+            {{ pickup_address3 }}<br/>
+        {% endif %}
+        {{ pickup_zipcode }} - {{ pickup_city }}<br/>
+        {{ pickup_cellphone }}
+    </p>
+    <p>{{ 'Thank you for your shopping with us and hope to see you soon'|trans({}, 'colissimopickuppoint.email.default', locale) }}{% if store_url != '' %}{{ ' on '|trans({}, 'colissimopickuppoint.email.default', locale) }}<a href="{{ store_url }}">{{ store_url }}</a>{% else %}.{% endif %}</p>
+    <p>{{ 'See you soon,'|trans({}, 'colissimopickuppoint.email.default', locale) }}<br/>
+        {{ 'Your shop '|trans({}, 'colissimopickuppoint.email.default', locale) }} {{ store_name }}</p>
+{% endblock %}

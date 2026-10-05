@@ -23,6 +23,7 @@
 
 namespace ColissimoPickupPoint;
 
+use ColissimoPickupPoint\DependencyInjection\Compiler\RegisterEmailTranslationsPass;
 use ColissimoPickupPoint\Model\ColissimoPickupPointAreaFreeshippingQuery;
 use ColissimoPickupPoint\Model\ColissimoPickupPointFreeshippingQuery;
 use PDO;
@@ -30,6 +31,7 @@ use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Propel;
 use ColissimoPickupPoint\Model\ColissimoPickupPointPriceSlicesQuery;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -406,10 +408,17 @@ class ColissimoPickupPoint extends AbstractDeliveryModuleWithState
         return ColissimoPickupPoint::getConfigValue(ColissimoPickupPoint::COLISSIMO_PICKUP_TYPE, '1');
     }
 
+    public static function getCompilers(): array
+    {
+        return [
+            [new RegisterEmailTranslationsPass(__DIR__, 'colissimopickuppoint'), PassConfig::TYPE_BEFORE_OPTIMIZATION],
+        ];
+    }
+
     public static function configureServices(ServicesConfigurator $servicesConfigurator): void
     {
         $servicesConfigurator->load(self::getModuleCode().'\\', __DIR__)
-            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*", __DIR__ . "/tests/*"])
+            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*", __DIR__ . "/tests/*", __DIR__ . "/DependencyInjection/*"])
             ->autowire(true)
             ->autoconfigure(true);
     }
