@@ -19,21 +19,29 @@ use Thelia\Model\OrderQuery;
 
 class PdfHook extends BaseHook
 {
+    /**
+     * The relay block of the invoice, for an order delivered at a relay only. Any other order gets nothing: the
+     * template is rendered by the Twig parser of the PDF, which cannot render a Smarty template.
+     */
     public function onInvoiceAfterDeliveryModule(HookRenderEvent $event)
     {
-        // No So Colissimo information if the delivery module is not ColissimoPickupPoint
-        if (ColissimoPickupPoint::getModuleId() == $event->getArgument('module_id')) {
+        if (ColissimoPickupPoint::getModuleId() !== (int) $event->getArgument('module_id')) {
             return;
         }
 
         $order = OrderQuery::create()->findOneById($event->getArgument('order'));
 
-        if (!is_null($order)) {
-            $event->add($this->render(
-                'delivery_mode_infos.html',
-                ['delivery_address_id' => $order->getDeliveryOrderAddressId()]
-            ));
+        if (null === $order) {
+            return;
         }
+
+        $event->add($this->render(
+            'delivery_mode_infos.html.twig',
+            [
+                'delivery_address_id' => $order->getDeliveryOrderAddressId(),
+                'locale' => $order->getLang()?->getLocale(),
+            ]
+        ));
     }
 
 
