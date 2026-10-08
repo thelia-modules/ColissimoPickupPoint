@@ -1,0 +1,15 @@
+{% for relay in loop('colissimo.pickup.point.order_address', 'colissimo.pickup.point.order_address', {id: delivery_address_id}) %}
+    <p>
+        {{ 'Delivered at a relay.'|trans({}, 'colissimopickuppoint.pdf.default', locale) }}<br/><br/>
+        <b>{{ 'Relay address:'|trans({}, 'colissimopickuppoint.pdf.default', locale) }}</b>
+        {% for address in loop('order_address', 'order_address', {id: delivery_address_id}) %}
+            <blockquote>{{ address.COMPANY }}<br/>
+                {{ address.ADDRESS1 }} {{ address.ADDRESS2 }} {{ address.ADDRESS3 }}<br/>
+                {{ address.ZIPCODE }} {{ address.CITY }}<br/>
+                {% for country in loop('country_delivery', 'country', {visible: '*', id: address.COUNTRY}) %}{{ country.TITLE }}{% endfor %}
+            </blockquote>
+        {% else %}
+            &nbsp;{{ 'no address'|trans({}, 'colissimopickuppoint.pdf.default', locale) }}
+        {% endfor %}
+    </p>
+{% endfor %}
