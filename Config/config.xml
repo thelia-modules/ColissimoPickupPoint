@@ -5,15 +5,7 @@
         xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
 
     <loops>
-        <loop class="ColissimoPickupPoint\Loop\CheckRightsLoop" name="colissimo.pickup.point.check.rights" />
-        <loop class="ColissimoPickupPoint\Loop\ColissimoPickupPointPriceSlices" name="colissimo.pickup.point" />
-        <loop class="ColissimoPickupPoint\Loop\ColissimoPickupPointId" name="colissimo.pickup.point.id" />
-        <loop class="ColissimoPickupPoint\Loop\GetRelais" name="colissimo.pickup.point.around" />
-        <loop class="ColissimoPickupPoint\Loop\ColissimoPickupPointAddress" name="address.colissimo.pickup.point" />
-        <loop class="ColissimoPickupPoint\Loop\NotSentOrders" name="order.notsent.colissimo.pickup.point" />
         <loop class="ColissimoPickupPoint\Loop\ColissimoPickupPointOrderAddressLoop" name="colissimo.pickup.point.order_address" />
-        <loop class="ColissimoPickupPoint\Loop\AreaFreeshipping" name="colissimo.pickup.point.area.freeshipping" />
-        <loop class="ColissimoPickupPoint\Loop\ColissimoPickupPointFreeshippingLoop" name="colissimo.pickup.point.freeshipping" />
     </loops>
 
 </config>
