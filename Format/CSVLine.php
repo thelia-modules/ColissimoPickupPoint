@@ -43,7 +43,7 @@ class CSVLine
      */
     public static function create(array $values)
     {
-        return new static($values);
+        return new self($values);
     }
 
     /**

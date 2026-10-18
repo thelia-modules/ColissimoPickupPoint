@@ -56,7 +56,7 @@ class CSV
      */
     public static function create($separator, array $lines=array())
     {
-        return new static($separator, $lines);
+        return new self($separator, $lines);
     }
 
     /**
